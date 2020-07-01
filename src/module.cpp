@@ -398,8 +398,7 @@ PYBIND11_MODULE(vtil, m) {
 
 		.def_readwrite( "complexity", &expression::complexity )
 		.def_readwrite( "depth", &expression::depth )
-		.def_readwrite( "hash_value", &expression::hash_value )
-		.def_readwrite( "simplify_hint", &expression::simplify_hint )
+		.def_readwrite( "is_lazy", &expression::is_lazy )
 
 		/* Functions */
 		.def( "get_op_desc", &expression::get_op_desc )
@@ -426,6 +425,7 @@ PYBIND11_MODULE(vtil, m) {
 
 		.def( "evaluate", &expression::evaluate )
 		.def( "clone", &expression::clone )
+		.def( "make_lazy", &expression::make_lazy )
 
 		.def( "__repr__", &expression::to_string )
 		.def( "__str__", &expression::to_string )
