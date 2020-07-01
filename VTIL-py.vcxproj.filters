@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{31709aa7-895a-4ea2-9705-8b74665eccbb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\helpers\basic_block_helper.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\helpers\operand_helper.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\module.cpp" />
+  </ItemGroup>
+</Project>

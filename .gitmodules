@@ -1,0 +1,6 @@
+[submodule "VTIL-Core"]
+	path = external/core
+	url = https://github.com/vtil-project/VTIL-Core
+[submodule "pybind11"]
+	path = external/pybind11
+	url = https://github.com/pybind/pybind11
