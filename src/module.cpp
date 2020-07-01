@@ -459,22 +459,8 @@ PYBIND11_MODULE(vtil, m) {
 
 #define IMPLEMENT_OPERATOR( name, ... ) 															  \
 		.def( name, [ ] ( const expression& lhs, const expression& rhs ) { return __VA_ARGS__; } )	  \
-		.def( name, [ ] ( const expression& lhs, uint8_t rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( uint8_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( const expression& lhs, uint16_t rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( uint16_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( const expression& lhs, uint32_t rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( uint32_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( const expression& lhs, uint64_t rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( uint64_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( const expression& lhs, int8_t rhs ) { return __VA_ARGS__; } )				  \
-		.def( name, [ ] ( int8_t lhs, const expression& rhs ) { return __VA_ARGS__; } )				  \
-		.def( name, [ ] ( const expression& lhs, int16_t rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( int16_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( const expression& lhs, int32_t rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( int32_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
 		.def( name, [ ] ( const expression& lhs, int64_t rhs ) { return __VA_ARGS__; } )			  \
-		.def( name, [ ] ( int64_t lhs, const expression& rhs ) { return __VA_ARGS__; } )
+		.def( name, [ ] ( const expression& lhs, uint64_t rhs ) { return __VA_ARGS__; } )
 
 		IMPLEMENT_OPERATOR( "rotr",        __rotr(lhs, rhs) )
 		IMPLEMENT_OPERATOR( "rotl",        __rotl(lhs, rhs) )
@@ -511,7 +497,23 @@ PYBIND11_MODULE(vtil, m) {
 		IMPLEMENT_OPERATOR( "__le__",      lhs <= rhs )
 		IMPLEMENT_OPERATOR( "__eq__",      lhs == rhs )
 		IMPLEMENT_OPERATOR( "__ne__",      lhs != rhs )
-		#undef IMPLEMENT_OPERATOR
+#undef IMPLEMENT_OPERATOR
+		
+#define IMPLEMENT_ROPERATOR( name, ... ) 															  \
+		.def( name, [ ] ( const expression& rhs, int64_t lhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( const expression& rhs, uint64_t lhs ) { return __VA_ARGS__; } )
+			
+		IMPLEMENT_ROPERATOR( "__radd__",     lhs + rhs )
+		IMPLEMENT_ROPERATOR( "__rsub__",     lhs - rhs )
+		IMPLEMENT_ROPERATOR( "__rmul__",     lhs * rhs )
+		IMPLEMENT_ROPERATOR( "__rtruediv__", lhs / rhs )
+		IMPLEMENT_ROPERATOR( "__rmod__",     lhs % rhs )
+		IMPLEMENT_ROPERATOR( "__rand__",     lhs & rhs )
+		IMPLEMENT_ROPERATOR( "__ror__",      lhs | rhs )
+		IMPLEMENT_ROPERATOR( "__rxor__",     lhs ^ rhs )
+		IMPLEMENT_ROPERATOR( "__rlshift__",  lhs << rhs )
+		IMPLEMENT_ROPERATOR( "__rrshift__",  lhs >> rhs )
+#undef IMPLEMENT_ROPERATOR
 		/* End */
 		;
 
