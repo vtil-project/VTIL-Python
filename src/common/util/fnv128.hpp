@@ -34,85 +34,38 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | module.cpp              | https://github.com/vtil-project/VTIL-Core      |
+// | fnv128.hpp              | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
-// |                         | https://github.com/aquynh/capstone/            |
-// |                         | https://github.com/keystone-engine/keystone/   |
 // |--------------------------------------------------------------------------|
 //
+#pragma once
+
+#include <vtil/vtil>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
-#include "architecture/arch/architecture_identifier.hpp"
-#include "architecture/arch/register_desc.hpp"
-#include "architecture/arch/operand.hpp"
-#include "architecture/routine/basic_block.hpp"
-#include "architecture/trace/tracer.hpp"
-#include "architecture/symex/variable.hpp"
-
-#include "common/util/fnv64.hpp"
-#include "common/util/fnv128.hpp"
-
-#include "symex/expressions/unique_identifier.hpp"
-#include "symex/expressions/expression.hpp"
-
-#include "external/arm64_reg.hpp"
-#include "external/x86_reg.hpp"
-
-using namespace vtil::python;
+using namespace vtil;
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(vtil, m) {
-
-	// VTIL Architecture
-	//
+namespace vtil::python
+{
+	class fnv128_hash_py : public py::class_<fnv128_hash_t>
 	{
-		/* Architecture */
-		architecture_identifier_py( m, "architecture_identifier" );
-		register_desc_py( m, "register_desc" );
-		operand_py( m, "operand" );
+		public:
+		fnv128_hash_py( const handle& scope, const char* name )
+			: class_( scope, name )
+		{
+			( *this )
+				// Functions
+				//
+				.def( "as64", &fnv128_hash_t::as64 )
+				.def( "__eq__", [ ] ( const fnv128_hash_t& a, const fnv128_hash_t& b ) { return a == b; } )
+				.def( "__repr__", &fnv128_hash_t::to_string )
+				.def( "__str__", &fnv128_hash_t::to_string )
 
-		/* Instruction Stream */
-		basic_block_py( m, "basic_block" );
-
-		/* Value Tracing */
-		tracer_py( m, "tracer" );
-
-		/* SymEx Integration */
-		variable_py( m, "variable" );
-	}
-
-
-	// VTIL Common
-	//
-	{
-		/* Utility */
-		fnv64_hash_py( m, "fnv64" );
-		fnv128_hash_py( m, "fnv128" );
-	}
-
-
-	// VTIL SymEx
-	//
-	{
-		/* Expressions */
-		unique_identifier_py( m, "uid" );
-		expression_py( m, "expression" );
-	}
-
-
-	// External
-	//
-	{
-		arm64_reg_py( m, "arm64_reg" );
-		x86_reg_py( m, "x86_reg" );
-	}
-
-
-#ifdef VERSION_INFO
-	m.attr("__version__") = VERSION_INFO;
-#else
-	m.attr("__version__") = "dev";
-#endif
+				// End
+				//
+				;
+		}
+	};
 }

@@ -1,16 +1,109 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Helpers">
-      <UniqueIdentifier>{31709aa7-895a-4ea2-9705-8b74665eccbb}</UniqueIdentifier>
+    <Filter Include="Architecture">
+      <UniqueIdentifier>{82ce09c5-f77f-40a4-9771-7527a90d0783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{099d0e0f-8cf0-47c2-a677-2b60a41703bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Compiler">
+      <UniqueIdentifier>{7e8b60b5-facc-4350-95a2-43d18c594041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SymEx">
+      <UniqueIdentifier>{d378e1ac-c26d-4f46-9ff0-5881bf084d41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External">
+      <UniqueIdentifier>{8276c7a4-81d0-4e18-991a-313cae4c1c3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Architecture\Architecture">
+      <UniqueIdentifier>{1ea0d256-2e86-43b7-be66-9fb8976864a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Architecture\Instruction Stream">
+      <UniqueIdentifier>{b64487cc-ccae-4d38-968b-c292a81c77c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Architecture\Miscellaneous">
+      <UniqueIdentifier>{283abd6f-0713-490f-b44c-095dcfe6a201}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Architecture\SymEx Integration">
+      <UniqueIdentifier>{7283022a-283f-462d-ad79-9dcc25e09412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Architecture\Value Tracing">
+      <UniqueIdentifier>{5ae7a57f-4b64-4370-baff-7052eb00787a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Architecture\Virtual Machine">
+      <UniqueIdentifier>{ff1f2b7f-a133-4499-aba5-c355002c9962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Architecture">
+      <UniqueIdentifier>{9c30f849-7662-43f0-9259-40b5f4bc9282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Formats">
+      <UniqueIdentifier>{eda72da3-7790-4203-82b4-86fc602dc30e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\I/O">
+      <UniqueIdentifier>{0375c24d-cc5d-4939-95d2-e89df62fe4c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Math">
+      <UniqueIdentifier>{4c8f81a1-f7b4-4449-89b3-a0006a6f61ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Queries">
+      <UniqueIdentifier>{1de51ff6-cad3-478d-a58b-906d14f18477}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Utility">
+      <UniqueIdentifier>{9b496201-5d7c-44f0-9797-c79ab8d839ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Compiler\Common">
+      <UniqueIdentifier>{1e1a885e-731c-4180-88c1-ff7f62e05782}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Compiler\Optimization Passes">
+      <UniqueIdentifier>{15e578a8-350c-4af2-bd7f-89d1789639f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SymEx\Directives">
+      <UniqueIdentifier>{a0fc7009-6593-43c3-a2fa-21085aa2cdd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SymEx\Expressions">
+      <UniqueIdentifier>{b5c7fe1c-c834-4a9d-95a8-621965fcfe01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SymEx\Simplifier">
+      <UniqueIdentifier>{6b185552-7cfb-4f5d-b2c1-ae8eea8f9b72}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\helpers\basic_block_helper.hpp">
-      <Filter>Helpers</Filter>
+    <ClInclude Include="src\external\arm64_reg.hpp">
+      <Filter>External</Filter>
     </ClInclude>
-    <ClInclude Include="src\helpers\operand_helper.hpp">
-      <Filter>Helpers</Filter>
+    <ClInclude Include="src\architecture\arch\architecture_identifier.hpp">
+      <Filter>Architecture\Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\architecture\arch\register_desc.hpp">
+      <Filter>Architecture\Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\architecture\arch\operand.hpp">
+      <Filter>Architecture\Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\architecture\routine\basic_block.hpp">
+      <Filter>Architecture\Instruction Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="src\architecture\symex\variable.hpp">
+      <Filter>Architecture\SymEx Integration</Filter>
+    </ClInclude>
+    <ClInclude Include="src\architecture\trace\tracer.hpp">
+      <Filter>Architecture\Value Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\util\fnv64.hpp">
+      <Filter>Common\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\util\fnv128.hpp">
+      <Filter>Common\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\symex\expressions\unique_identifier.hpp">
+      <Filter>SymEx\Expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\symex\expressions\expression.hpp">
+      <Filter>SymEx\Expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\external\x86_reg.hpp">
+      <Filter>External</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

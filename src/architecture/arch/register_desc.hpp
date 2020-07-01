@@ -34,85 +34,69 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | module.cpp              | https://github.com/vtil-project/VTIL-Core      |
+// | register_desc.hpp       | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
-// |                         | https://github.com/aquynh/capstone/            |
-// |                         | https://github.com/keystone-engine/keystone/   |
 // |--------------------------------------------------------------------------|
 //
+#pragma once
+
+#include <vtil/vtil>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
-#include "architecture/arch/architecture_identifier.hpp"
-#include "architecture/arch/register_desc.hpp"
-#include "architecture/arch/operand.hpp"
-#include "architecture/routine/basic_block.hpp"
-#include "architecture/trace/tracer.hpp"
-#include "architecture/symex/variable.hpp"
-
-#include "common/util/fnv64.hpp"
-#include "common/util/fnv128.hpp"
-
-#include "symex/expressions/unique_identifier.hpp"
-#include "symex/expressions/expression.hpp"
-
-#include "external/arm64_reg.hpp"
-#include "external/x86_reg.hpp"
-
-using namespace vtil::python;
+using namespace vtil;
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(vtil, m) {
-
-	// VTIL Architecture
-	//
+namespace vtil::python
+{
+	class register_desc_py : public py::class_<register_desc>
 	{
-		/* Architecture */
-		architecture_identifier_py( m, "architecture_identifier" );
-		register_desc_py( m, "register_desc" );
-		operand_py( m, "operand" );
+		public:
+		register_desc_py( const handle& scope, const char* name )
+			: class_( scope, name )
+		{
+			( *this )
+				// Static
+				//
+				.def_property_readonly_static( "SP", [ ] ( const py::object& ) { return REG_SP; } )
+				.def_property_readonly_static( "FLAGS", [ ] ( const py::object& ) { return REG_FLAGS; } )
+				.def_property_readonly_static( "IMGBASE", [ ] ( const py::object& ) { return REG_IMGBASE; } )
 
-		/* Instruction Stream */
-		basic_block_py( m, "basic_block" );
+				// Properties
+				//
+				.def_readwrite( "flags", &register_desc::flags )
+				.def_readwrite( "combined_id", &register_desc::combined_id )
+				.def_readwrite( "bit_count", &register_desc::bit_count )
+				.def_readwrite( "bit_offset", &register_desc::bit_offset )
 
-		/* Value Tracing */
-		tracer_py( m, "tracer" );
+				// Functions
+				//
+				.def( "is_valid", &register_desc::is_valid )
+				.def( "is_flags", &register_desc::is_flags )
+				.def( "is_undefined", &register_desc::is_undefined )
+				.def( "is_local", &register_desc::is_local )
+				.def( "is_global", &register_desc::is_global )
+				.def( "is_virtual", &register_desc::is_virtual )
+				.def( "is_physical", &register_desc::is_physical )
+				.def( "is_volatile", &register_desc::is_volatile )
+				.def( "is_read_only", &register_desc::is_read_only )
+				.def( "is_stack_pointer", &register_desc::is_stack_pointer )
+				.def( "is_image_base", &register_desc::is_image_base )
+				.def( "is_special", &register_desc::is_special )
+				.def( "is_internal", &register_desc::is_internal )
 
-		/* SymEx Integration */
-		variable_py( m, "variable" );
-	}
+				.def( "get_mask", &register_desc::get_mask )
+				.def( "overlaps", &register_desc::overlaps )
+				.def( "to_string", &register_desc::to_string )
 
+				.def( "reduce", py::overload_cast< >( &register_desc::reduce ) )
 
-	// VTIL Common
-	//
-	{
-		/* Utility */
-		fnv64_hash_py( m, "fnv64" );
-		fnv128_hash_py( m, "fnv128" );
-	}
+				.def( "__repr__", &register_desc::to_string )
+				.def( "__str__", &register_desc::to_string )
 
-
-	// VTIL SymEx
-	//
-	{
-		/* Expressions */
-		unique_identifier_py( m, "uid" );
-		expression_py( m, "expression" );
-	}
-
-
-	// External
-	//
-	{
-		arm64_reg_py( m, "arm64_reg" );
-		x86_reg_py( m, "x86_reg" );
-	}
-
-
-#ifdef VERSION_INFO
-	m.attr("__version__") = VERSION_INFO;
-#else
-	m.attr("__version__") = "dev";
-#endif
+				// End
+				//
+				;
+		}
+	};
 }

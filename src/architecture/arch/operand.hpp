@@ -34,85 +34,79 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | module.cpp              | https://github.com/vtil-project/VTIL-Core      |
+// | operand.hpp             | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
-// |                         | https://github.com/aquynh/capstone/            |
-// |                         | https://github.com/keystone-engine/keystone/   |
 // |--------------------------------------------------------------------------|
 //
+#pragma once
+
+#include <vtil/vtil>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
-#include "architecture/arch/architecture_identifier.hpp"
-#include "architecture/arch/register_desc.hpp"
-#include "architecture/arch/operand.hpp"
-#include "architecture/routine/basic_block.hpp"
-#include "architecture/trace/tracer.hpp"
-#include "architecture/symex/variable.hpp"
-
-#include "common/util/fnv64.hpp"
-#include "common/util/fnv128.hpp"
-
-#include "symex/expressions/unique_identifier.hpp"
-#include "symex/expressions/expression.hpp"
-
-#include "external/arm64_reg.hpp"
-#include "external/x86_reg.hpp"
-
-using namespace vtil::python;
+using namespace vtil;
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(vtil, m) {
-
-	// VTIL Architecture
-	//
+namespace vtil::python
+{
+	class operand_py : public py::class_<operand>
 	{
-		/* Architecture */
-		architecture_identifier_py( m, "architecture_identifier" );
-		register_desc_py( m, "register_desc" );
-		operand_py( m, "operand" );
+		public:
+		operand_py( const handle& scope, const char* name )
+			: class_( scope, name )
+		{
+			( *this )
+				// Properties
+				//
+				.def_readwrite( "descriptor", &operand::descriptor )
 
-		/* Instruction Stream */
-		basic_block_py( m, "basic_block" );
+				// Functions
+				//
+				.def( "imm", py::overload_cast< >( &operand::imm ) )
+				.def( "reg", py::overload_cast< >( &operand::reg ) )
+				.def( "size", &operand::size )
+				.def( "bit_count", &operand::bit_count )
+				.def( "to_string", &operand::to_string )
+				.def( "is_register", &operand::is_register )
+				.def( "is_immediate", &operand::is_immediate )
+				.def( "is_valid", &operand::is_valid )
+				.def( "reduce", py::overload_cast< >( &operand::reduce ) )
 
-		/* Value Tracing */
-		tracer_py( m, "tracer" );
+				// End
+				//
+				;
+		}
+	};
+}
 
-		/* SymEx Integration */
-		variable_py( m, "variable" );
-	}
-
-
-	// VTIL Common
-	//
+namespace pybind11::detail
+{
+	template<> struct type_caster<operand> : public type_caster_base<operand>
 	{
-		/* Utility */
-		fnv64_hash_py( m, "fnv64" );
-		fnv128_hash_py( m, "fnv128" );
-	}
+		using base = type_caster_base<operand>;
 
+		template<typename T>
+		bool explicit_cast( handle src )
+		{
+			return py::isinstance<T>( src ) && ( this->value = new operand( py::cast<T>( src ) ) );
+		}
 
-	// VTIL SymEx
-	//
-	{
-		/* Expressions */
-		unique_identifier_py( m, "uid" );
-		expression_py( m, "expression" );
-	}
+		public:
+		bool load( handle src, bool convert )
+		{
+			if ( py::isinstance<py::int_>( src ) )
+			{
+				auto value = py::cast<uint64_t>( src );
+				this->value = new operand( value, sizeof( value ) * 8 );
+				return true;
+			}
 
+			return explicit_cast< arm64_reg >( src ) || explicit_cast< x86_reg >( src ) || explicit_cast< register_desc >( src );
+		}
 
-	// External
-	//
-	{
-		arm64_reg_py( m, "arm64_reg" );
-		x86_reg_py( m, "x86_reg" );
-	}
-
-
-#ifdef VERSION_INFO
-	m.attr("__version__") = VERSION_INFO;
-#else
-	m.attr("__version__") = "dev";
-#endif
+		static handle cast( operand* src, return_value_policy policy, handle parent )
+		{
+			return base::cast( src, policy, parent );
+		}
+	};
 }

@@ -34,57 +34,50 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | basic_block_helper.hpp  | https://github.com/vtil-project/VTIL-Core      |
+// | tracer.hpp              | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
 // |--------------------------------------------------------------------------|
 //
 #pragma once
+
 #include <vtil/vtil>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
 using namespace vtil;
-using namespace vtil::logger;
-using namespace vtil::symbolic;
-
 namespace py = pybind11;
 
 
-namespace basic_block_helper
+namespace vtil::python
 {
-	auto tmp( basic_block& bbl, py::args args )
+	class tracer_py : public py::class_<tracer>
 	{
-		std::vector<register_desc> tmps;
-		for ( size_t i = 0; i < args.size(); ++i )
-		{
-			tmps.push_back( bbl.tmp( py::cast<bitcnt_t>( args[ i ] ) ) );
-		}
-
-		return tmps;
-	}
-}
-
-namespace pybind11::detail
-{
-	template<> struct type_caster<il_const_iterator> : public type_caster_base<il_const_iterator>
-	{
-		using base = type_caster_base<il_const_iterator>;
-
 		public:
-		bool load( handle src, bool convert )
+		tracer_py( const handle& scope, const char* name )
+			: class_( scope, name )
 		{
-			if ( py::isinstance<basic_block::iterator>( src ) )
-			{
-				this->value = new il_const_iterator( py::cast<basic_block::iterator>( src ) );
-				return true;
-			}
+			( *this )
+				// Constructor
+				//
+				.def( py::init<>() )
 
-			return false;
-		}
+				// Functions
+				//
+				.def( "trace", &tracer::trace )
+				.def( "rtrace", &tracer::rtrace )
 
-		static handle cast( il_const_iterator src, return_value_policy policy, handle parent )
-		{
-			return base::cast( src, policy, parent );
+				.def( "trace_p", &tracer::trace_p )
+				.def( "rtrace_p", &tracer::rtrace_p )
+
+				.def( "trace_exp", &tracer::trace_exp )
+				.def( "rtrace_exp", &tracer::rtrace_exp )
+				.def( "trace_pexp", &tracer::trace_pexp )
+				.def( "rtrace_pexp", &tracer::rtrace_pexp )
+
+				.def( "__call__", &tracer::trace_p )
+
+				// End
+				//
+				;
 		}
 	};
 }

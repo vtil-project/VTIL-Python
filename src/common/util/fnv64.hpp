@@ -34,52 +34,38 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | operand_helper.hpp      | https://github.com/vtil-project/VTIL-Core      |
+// | fnv64.hpp               | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
-// |                         | https://github.com/aquynh/capstone/            |
-// |                         | https://github.com/keystone-engine/keystone/   |
 // |--------------------------------------------------------------------------|
 //
 #pragma once
+
 #include <vtil/vtil>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
 using namespace vtil;
-using namespace vtil::logger;
-using namespace vtil::symbolic;
-
 namespace py = pybind11;
 
 
-namespace pybind11::detail
+namespace vtil::python
 {
-	template<> struct type_caster<operand> : public type_caster_base<operand>
+	class fnv64_hash_py : public py::class_<fnv64_hash_t>
 	{
-		using base = type_caster_base<operand>;
-
-		template<typename T>
-		bool explicit_cast( handle src )
-		{
-			return py::isinstance<T>( src ) && ( this->value = new operand( py::cast<T>( src ) ) );
-		}
-
 		public:
-		bool load( handle src, bool convert )
+		fnv64_hash_py( const handle& scope, const char* name )
+			: class_( scope, name )
 		{
-			if ( py::isinstance<py::int_>( src ) )
-			{
-				auto value = py::cast<uint64_t>( src );
-				this->value = new operand( value, sizeof( value ) * 8 );
-				return true;
-			}
+			( *this )
+				// Functions
+				//
+				.def( "as64", &fnv64_hash_t::as64 )
+				.def( "__eq__", [ ] ( const fnv64_hash_t& a, const fnv64_hash_t& b ) { return a == b; } )
+				.def( "__repr__", &fnv64_hash_t::to_string )
+				.def( "__str__", &fnv64_hash_t::to_string )
 
-			return explicit_cast< arm64_reg >( src ) || explicit_cast< x86_reg >( src ) || explicit_cast< register_desc >( src );
-		}
-
-		static handle cast( operand* src, return_value_policy policy, handle parent )
-		{
-			return base::cast( src, policy, parent );
+				// End
+				//
+				;
 		}
 	};
 }
