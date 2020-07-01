@@ -375,7 +375,10 @@ PYBIND11_MODULE(vtil, m) {
 		.def( "as64", &fnv128_hash_t::as64 )
 		.def( "__eq__", [ ] ( const fnv128_hash_t& a, const fnv128_hash_t& b ) { return a == b; } )
 		.def( "__repr__", &fnv128_hash_t::to_string )
-		.def( "__str__", &fnv128_hash_t::to_string );
+		.def( "__str__", &fnv128_hash_t::to_string )
+
+		/* End */
+		;
 
 	/**************************
 	*        unique id        *
@@ -388,7 +391,10 @@ PYBIND11_MODULE(vtil, m) {
 		.def( "hash", &unique_identifier::hash )
 		.def( "__eq__", [ ] ( const unique_identifier& a, const unique_identifier& b ) { return a == b; } )
 		.def( "__repr__", &unique_identifier::to_string )
-		.def( "__str__", &unique_identifier::to_string );
+		.def( "__str__", &unique_identifier::to_string )
+
+		/* End */
+		;
 
 	/**************************
 	*       expression        *
@@ -444,129 +450,70 @@ PYBIND11_MODULE(vtil, m) {
 		.def( "__repr__", &expression::to_string )
 		.def( "__str__", &expression::to_string )
 		
+		.def( "popcnt",      [ ] ( const expression& rhs ) { return __popcnt( rhs ); } ) 
+		.def( "mask",        [ ] ( const expression& rhs ) { return __mask( rhs ); } )
+		.def( "bsr",         [ ] ( const expression& rhs ) { return __bsr( rhs ); } )
+		.def( "bsf",         [ ] ( const expression& rhs ) { return __bsf( rhs ); } )
 		.def( "__invert__",  [ ] ( const expression& rhs ) { return ~rhs; } )
 		.def( "__neg__",     [ ] ( const expression& rhs ) { return -rhs; } )
-		.def( "__add__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs + rhs; } )
-		.def( "__sub__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs - rhs; } )
-		.def( "__mul__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs * rhs; } )
-		.def( "__truediv__", [ ] ( const expression& lhs, const expression& rhs ) { return lhs / rhs; } )
-		.def( "__mod__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs % rhs; } )
-		.def( "__and__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs & rhs; } )
-		.def( "__or__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs | rhs; } )
-		.def( "__xor__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs ^ rhs; } )
-		.def( "__lshift__",  [ ] ( const expression& lhs, const expression& rhs ) { return lhs << rhs; } )
-		.def( "__rshift__",  [ ] ( const expression& lhs, const expression& rhs ) { return lhs >> rhs; } )
-		.def( "__gt__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs > rhs; } )
-		.def( "__ge__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs >= rhs; } )
-		.def( "__lt__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs < rhs; } )
-		.def( "__le__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs <= rhs; } )
-		.def( "__eq__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs == rhs; } )
-		.def( "__ne__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs != rhs; } )
-		
-		// TODO: Cmon lol.
-		//
-		.def( "__add__",     [ ] ( const expression& lhs, uint64_t rhs ) { return lhs + rhs; } )
-		.def( "__sub__",     [ ] ( const expression& lhs, uint64_t rhs ) { return lhs - rhs; } )
-		.def( "__mul__",     [ ] ( const expression& lhs, uint64_t rhs ) { return lhs * rhs; } )
-		.def( "__truediv__", [ ] ( const expression& lhs, uint64_t rhs ) { return lhs / rhs; } )
-		.def( "__mod__",     [ ] ( const expression& lhs, uint64_t rhs ) { return lhs % rhs; } )
-		.def( "__and__",     [ ] ( const expression& lhs, uint64_t rhs ) { return lhs & rhs; } )
-		.def( "__or__",      [ ] ( const expression& lhs, uint64_t rhs ) { return lhs | rhs; } )
-		.def( "__xor__",     [ ] ( const expression& lhs, uint64_t rhs ) { return lhs ^ rhs; } )
-		.def( "__lshift__",  [ ] ( const expression& lhs, uint64_t rhs ) { return lhs << rhs; } )
-		.def( "__rshift__",  [ ] ( const expression& lhs, uint64_t rhs ) { return lhs >> rhs; } )
-		.def( "__gt__",      [ ] ( const expression& lhs, uint64_t rhs ) { return lhs > rhs; } )
-		.def( "__ge__",      [ ] ( const expression& lhs, uint64_t rhs ) { return lhs >= rhs; } )
-		.def( "__lt__",      [ ] ( const expression& lhs, uint64_t rhs ) { return lhs < rhs; } )
-		.def( "__le__",      [ ] ( const expression& lhs, uint64_t rhs ) { return lhs <= rhs; } )
-		.def( "__eq__",      [ ] ( const expression& lhs, uint64_t rhs ) { return lhs == rhs; } )
-		.def( "__ne__",      [ ] ( const expression& lhs, uint64_t rhs ) { return lhs != rhs; } )
 
-		.def( "__add__",     [ ] ( uint64_t lhs, const expression& rhs ) { return lhs + rhs; } )
-		.def( "__sub__",     [ ] ( uint64_t lhs, const expression& rhs ) { return lhs - rhs; } )
-		.def( "__mul__",     [ ] ( uint64_t lhs, const expression& rhs ) { return lhs * rhs; } )
-		.def( "__truediv__", [ ] ( uint64_t lhs, const expression& rhs ) { return lhs / rhs; } )
-		.def( "__mod__",     [ ] ( uint64_t lhs, const expression& rhs ) { return lhs % rhs; } )
-		.def( "__and__",     [ ] ( uint64_t lhs, const expression& rhs ) { return lhs & rhs; } )
-		.def( "__or__",      [ ] ( uint64_t lhs, const expression& rhs ) { return lhs | rhs; } )
-		.def( "__xor__",     [ ] ( uint64_t lhs, const expression& rhs ) { return lhs ^ rhs; } )
-		.def( "__lshift__",  [ ] ( uint64_t lhs, const expression& rhs ) { return lhs << rhs; } )
-		.def( "__rshift__",  [ ] ( uint64_t lhs, const expression& rhs ) { return lhs >> rhs; } )
-		.def( "__gt__",      [ ] ( uint64_t lhs, const expression& rhs ) { return lhs > rhs; } )
-		.def( "__ge__",      [ ] ( uint64_t lhs, const expression& rhs ) { return lhs >= rhs; } )
-		.def( "__lt__",      [ ] ( uint64_t lhs, const expression& rhs ) { return lhs < rhs; } )
-		.def( "__le__",      [ ] ( uint64_t lhs, const expression& rhs ) { return lhs <= rhs; } )
-		.def( "__eq__",      [ ] ( uint64_t lhs, const expression& rhs ) { return lhs == rhs; } )
-		.def( "__ne__",      [ ] ( uint64_t lhs, const expression& rhs ) { return lhs != rhs; } )
-		
-		.def( "__add__",     [ ] ( const expression& lhs, int64_t rhs ) { return lhs + rhs; } )
-		.def( "__sub__",     [ ] ( const expression& lhs, int64_t rhs ) { return lhs - rhs; } )
-		.def( "__mul__",     [ ] ( const expression& lhs, int64_t rhs ) { return lhs * rhs; } )
-		.def( "__truediv__", [ ] ( const expression& lhs, int64_t rhs ) { return lhs / rhs; } )
-		.def( "__mod__",     [ ] ( const expression& lhs, int64_t rhs ) { return lhs % rhs; } )
-		.def( "__and__",     [ ] ( const expression& lhs, int64_t rhs ) { return lhs & rhs; } )
-		.def( "__or__",      [ ] ( const expression& lhs, int64_t rhs ) { return lhs | rhs; } )
-		.def( "__xor__",     [ ] ( const expression& lhs, int64_t rhs ) { return lhs ^ rhs; } )
-		.def( "__lshift__",  [ ] ( const expression& lhs, int64_t rhs ) { return lhs << rhs; } )
-		.def( "__rshift__",  [ ] ( const expression& lhs, int64_t rhs ) { return lhs >> rhs; } )
-		.def( "__gt__",      [ ] ( const expression& lhs, int64_t rhs ) { return lhs > rhs; } )
-		.def( "__ge__",      [ ] ( const expression& lhs, int64_t rhs ) { return lhs >= rhs; } )
-		.def( "__lt__",      [ ] ( const expression& lhs, int64_t rhs ) { return lhs < rhs; } )
-		.def( "__le__",      [ ] ( const expression& lhs, int64_t rhs ) { return lhs <= rhs; } )
-		.def( "__eq__",      [ ] ( const expression& lhs, int64_t rhs ) { return lhs == rhs; } )
-		.def( "__ne__",      [ ] ( const expression& lhs, int64_t rhs ) { return lhs != rhs; } )
+#define IMPLEMENT_OPERATOR( name, ... ) 															  \
+		.def( name, [ ] ( const expression& lhs, const expression& rhs ) { return __VA_ARGS__; } )	  \
+		.def( name, [ ] ( const expression& lhs, uint8_t rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( uint8_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( const expression& lhs, uint16_t rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( uint16_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( const expression& lhs, uint32_t rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( uint32_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( const expression& lhs, uint64_t rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( uint64_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( const expression& lhs, int8_t rhs ) { return __VA_ARGS__; } )				  \
+		.def( name, [ ] ( int8_t lhs, const expression& rhs ) { return __VA_ARGS__; } )				  \
+		.def( name, [ ] ( const expression& lhs, int16_t rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( int16_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( const expression& lhs, int32_t rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( int32_t lhs, const expression& rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( const expression& lhs, int64_t rhs ) { return __VA_ARGS__; } )			  \
+		.def( name, [ ] ( int64_t lhs, const expression& rhs ) { return __VA_ARGS__; } )
 
-		.def( "__add__",     [ ] ( int64_t lhs, const expression& rhs ) { return lhs + rhs; } )
-		.def( "__sub__",     [ ] ( int64_t lhs, const expression& rhs ) { return lhs - rhs; } )
-		.def( "__mul__",     [ ] ( int64_t lhs, const expression& rhs ) { return lhs * rhs; } )
-		.def( "__truediv__", [ ] ( int64_t lhs, const expression& rhs ) { return lhs / rhs; } )
-		.def( "__mod__",     [ ] ( int64_t lhs, const expression& rhs ) { return lhs % rhs; } )
-		.def( "__and__",     [ ] ( int64_t lhs, const expression& rhs ) { return lhs & rhs; } )
-		.def( "__or__",      [ ] ( int64_t lhs, const expression& rhs ) { return lhs | rhs; } )
-		.def( "__xor__",     [ ] ( int64_t lhs, const expression& rhs ) { return lhs ^ rhs; } )
-		.def( "__lshift__",  [ ] ( int64_t lhs, const expression& rhs ) { return lhs << rhs; } )
-		.def( "__rshift__",  [ ] ( int64_t lhs, const expression& rhs ) { return lhs >> rhs; } )
-		.def( "__gt__",      [ ] ( int64_t lhs, const expression& rhs ) { return lhs > rhs; } )
-		.def( "__ge__",      [ ] ( int64_t lhs, const expression& rhs ) { return lhs >= rhs; } )
-		.def( "__lt__",      [ ] ( int64_t lhs, const expression& rhs ) { return lhs < rhs; } )
-		.def( "__le__",      [ ] ( int64_t lhs, const expression& rhs ) { return lhs <= rhs; } )
-		.def( "__eq__",      [ ] ( int64_t lhs, const expression& rhs ) { return lhs == rhs; } )
-		.def( "__ne__",      [ ] ( int64_t lhs, const expression& rhs ) { return lhs != rhs; } )
-
-		/*
-		TODO:
-		__rotr
-		__rotl
-		mulhi
-		umulhi
-		umul
-		udiv
-		urem
-		__ucast
-		__cast
-		__popcnt
-		__bsf
-		__bsr
-		__bt
-		__mask
-		__bcnt
-		__if
-		__max
-		__min
-		__umax
-		__umin
-		__ugreat
-		__ugreat_eq
-		__uequal
-		__unot_equal
-		__uless_eq
-		__uless
-		*/
-
+		IMPLEMENT_OPERATOR( "rotr",        __rotr(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "rotl",        __rotl(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "mulhi",       mulhi(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "umulhi",      umulhi(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "umul",        umul(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "udiv",        udiv(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "urem",        urem(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "bt",          __bt(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "iff",         __if(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "max",         __max(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "min",         __min(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "umax",        __umax(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "umin",        __umin(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "ugt",         __ugreat(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "uge",         __ugreat_eq(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "ueq",         __uequal(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "une",         __unot_equal(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "ule",         __uless_eq(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "ult",         __uless(lhs, rhs) )
+		IMPLEMENT_OPERATOR( "__add__",     lhs + rhs )
+		IMPLEMENT_OPERATOR( "__sub__",     lhs - rhs )
+		IMPLEMENT_OPERATOR( "__mul__",     lhs * rhs )
+		IMPLEMENT_OPERATOR( "__truediv__", lhs / rhs )
+		IMPLEMENT_OPERATOR( "__mod__",     lhs % rhs )
+		IMPLEMENT_OPERATOR( "__and__",     lhs & rhs )
+		IMPLEMENT_OPERATOR( "__or__",      lhs | rhs )
+		IMPLEMENT_OPERATOR( "__xor__",     lhs ^ rhs )
+		IMPLEMENT_OPERATOR( "__lshift__",  lhs << rhs )
+		IMPLEMENT_OPERATOR( "__rshift__",  lhs >> rhs )
+		IMPLEMENT_OPERATOR( "__gt__",      lhs > rhs )
+		IMPLEMENT_OPERATOR( "__ge__",      lhs >= rhs )
+		IMPLEMENT_OPERATOR( "__lt__",      lhs < rhs )
+		IMPLEMENT_OPERATOR( "__le__",      lhs <= rhs )
+		IMPLEMENT_OPERATOR( "__eq__",      lhs == rhs )
+		IMPLEMENT_OPERATOR( "__ne__",      lhs != rhs )
+		#undef IMPLEMENT_OPERATOR
 		/* End */
 		;
-
-	
 
 #ifdef VERSION_INFO
 	m.attr("__version__") = VERSION_INFO;
