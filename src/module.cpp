@@ -400,7 +400,6 @@ PYBIND11_MODULE(vtil, m) {
 		.def_readwrite( "depth", &expression::depth )
 		.def_readwrite( "hash_value", &expression::hash_value )
 		.def_readwrite( "simplify_hint", &expression::simplify_hint )
-		.def_readwrite( "is_lazy", &expression::is_lazy )
 
 		/* Functions */
 		.def( "get_op_desc", &expression::get_op_desc )
@@ -419,7 +418,7 @@ PYBIND11_MODULE(vtil, m) {
 		.def( "update", &expression::update )
 		.def( "to_string", &expression::to_string )
 
-		.def( "resize", py::overload_cast< bitcnt_t, bool >( &expression::resize ) )
+		.def( "resize", [ ] ( expression& exp, bitcnt_t size, bool sign ) { return exp.resize( size, sign ); } )
 		.def( "simplify", py::overload_cast< bool >( &expression::simplify ) )
 
 		.def( "is_identical", &expression::is_identical )
@@ -427,13 +426,63 @@ PYBIND11_MODULE(vtil, m) {
 
 		.def( "evaluate", &expression::evaluate )
 		.def( "clone", &expression::clone )
-		.def( "make_lazy", &expression::make_lazy )
 
 		.def( "__repr__", &expression::to_string )
 		.def( "__str__", &expression::to_string )
+		
+		.def( "__not__",     [ ] ( const expression& rhs ) { return ~rhs; } )
+		.def( "__neg__",     [ ] ( const expression& rhs ) { return -rhs; } )
+		.def( "__add__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs + rhs; } )
+		.def( "__sub__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs - rhs; } )
+		.def( "__mul__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs * rhs; } )
+		.def( "__truediv__", [ ] ( const expression& lhs, const expression& rhs ) { return lhs / rhs; } )
+		.def( "__mod__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs % rhs; } )
+		.def( "__and__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs & rhs; } )
+		.def( "__or__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs | rhs; } )
+		.def( "__xor__",     [ ] ( const expression& lhs, const expression& rhs ) { return lhs ^ rhs; } )
+		.def( "__lshift__",  [ ] ( const expression& lhs, const expression& rhs ) { return lhs << rhs; } )
+		.def( "__rshift__",  [ ] ( const expression& lhs, const expression& rhs ) { return lhs >> rhs; } )
+		.def( "__gt__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs > rhs; } )
+		.def( "__ge__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs >= rhs; } )
+		.def( "__lt__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs < rhs; } )
+		.def( "__le__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs <= rhs; } )
+		.def( "__eq__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs == rhs; } )
+		.def( "__ne__",      [ ] ( const expression& lhs, const expression& rhs ) { return lhs != rhs; } )
+		.def( "__add__", [ ] ( const expression& lhs, const expression& rhs ) { return lhs + rhs; } )
+		/*
+		TODO:
+		__rotr
+		__rotl
+		mulhi
+		umulhi
+		umul
+		udiv
+		urem
+		__ucast
+		__cast
+		__popcnt
+		__bsf
+		__bsr
+		__bt
+		__mask
+		__bcnt
+		__if
+		__max
+		__min
+		__umax
+		__umin
+		__ugreat
+		__ugreat_eq
+		__uequal
+		__unot_equal
+		__uless_eq
+		__uless
+		*/
 
 		/* End */
 		;
+
+	
 
 #ifdef VERSION_INFO
 	m.attr("__version__") = VERSION_INFO;
