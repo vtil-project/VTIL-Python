@@ -364,6 +364,19 @@ PYBIND11_MODULE(vtil, m) {
 		;
 
 	/**************************
+	*        unique id        *
+	**************************/
+	py::class_<unique_identifier>( m, "uid" )
+		/* Constructor */
+		.def( py::init<std::string>() )
+
+		/* Functions */
+		.def( "hash", &unique_identifier::hash )
+		.def( "__eq__", [ ] ( const unique_identifier& a, const unique_identifier& b ) { return a == b; } )
+		.def( "__repr__", &unique_identifier::to_string )
+		.def( "__str__", &unique_identifier::to_string );
+
+	/**************************
 	*       expression        *
 	**************************/
 	py::class_<expression>( m, "expression" )
