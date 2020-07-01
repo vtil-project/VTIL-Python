@@ -364,6 +364,20 @@ PYBIND11_MODULE(vtil, m) {
 		;
 
 	/**************************
+	*       hash types        *
+	**************************/
+	py::class_<fnv64_hash_t>( m, "fnv64" )
+		.def( "as64", &fnv64_hash_t::as64 )
+		.def( "__eq__", [ ] ( const fnv64_hash_t& a, const fnv64_hash_t& b ) { return a == b; } )
+		.def( "__repr__", &fnv64_hash_t::to_string )
+		.def( "__str__", &fnv64_hash_t::to_string );
+	py::class_<fnv128_hash_t>( m, "fnv128" )
+		.def( "as64", &fnv128_hash_t::as64 )
+		.def( "__eq__", [ ] ( const fnv128_hash_t& a, const fnv128_hash_t& b ) { return a == b; } )
+		.def( "__repr__", &fnv128_hash_t::to_string )
+		.def( "__str__", &fnv128_hash_t::to_string );
+
+	/**************************
 	*        unique id        *
 	**************************/
 	py::class_<unique_identifier>( m, "uid" )
