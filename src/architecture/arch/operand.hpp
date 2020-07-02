@@ -108,5 +108,17 @@ namespace pybind11::detail
 		{
 			return base::cast( src, policy, parent );
 		}
+		static handle cast( const operand* src, return_value_policy policy, handle parent )
+		{
+			return base::cast( src, policy, parent );
+		}
+		static handle cast( operand& src, return_value_policy policy, handle parent )
+		{
+			return base::cast( src, policy, parent );
+		}
+		static handle cast( const operand& src, return_value_policy policy, handle parent )
+		{
+			return base::cast( src, policy, parent );
+		}
 	};
 }

@@ -34,91 +34,55 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | module.cpp              | https://github.com/vtil-project/VTIL-Core      |
+// | instruction_desc.hpp    | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
-// |                         | https://github.com/aquynh/capstone/            |
-// |                         | https://github.com/keystone-engine/keystone/   |
 // |--------------------------------------------------------------------------|
 //
+#pragma once
+
+#include <vtil/vtil>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
-#include "architecture/arch/architecture_identifier.hpp"
-#include "architecture/arch/register_desc.hpp"
-#include "architecture/arch/operand.hpp"
-#include "architecture/arch/instruction_desc.hpp"
-#include "architecture/routine/instruction.hpp"
-#include "architecture/routine/basic_block.hpp"
-#include "architecture/routine/routine.hpp"
-#include "architecture/trace/tracer.hpp"
-#include "architecture/symex/variable.hpp"
-
-#include "common/util/fnv64.hpp"
-#include "common/util/fnv128.hpp"
-
-#include "symex/expressions/unique_identifier.hpp"
-#include "symex/expressions/expression.hpp"
-
-#include "external/arm64_reg.hpp"
-#include "external/x86_reg.hpp"
-
-using namespace vtil::python;
+using namespace vtil;
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(vtil, m) {
-
-	// VTIL Architecture
-	//
+namespace vtil::python
+{
+	class instruction_desc_py : public py::class_<instruction_desc>
 	{
-		/* Architecture */
-		architecture_identifier_py( m, "architecture_identifier" );
-		register_desc_py( m, "register_desc" );
-		operand_py( m, "operand" );
-		instruction_desc_py( m, "instruction_desc" );
+		public:
+		instruction_desc_py( const handle& scope, const char* name )
+			: class_( scope, name )
+		{
+			( *this )
+				// Properties
+				//
+				.def_readonly( "name", &instruction_desc::name )
+				.def_readonly( "operand_types", &instruction_desc::operand_types )
+				.def_readonly( "is_volatile", &instruction_desc::is_volatile )
+				.def_readonly( "symbolic_operator", &instruction_desc::symbolic_operator )
+				.def_readonly( "branch_operands_rip", &instruction_desc::branch_operands_rip )
+				.def_readonly( "branch_operands_vip", &instruction_desc::branch_operands_vip )
+				.def_readonly( "memory_operand_index", &instruction_desc::memory_operand_index )
+				.def_readonly( "memory_write", &instruction_desc::memory_write )
+				.def_readonly( "is_volatile", &instruction_desc::is_volatile )
 
-		/* Instruction Stream */
-		instruction_py( m, "instruction" );
-		basic_block_py( m, "basic_block" );
-		routine_py( m, "routine" );
+				// Functions
+				//
+				.def( "operand_count", &instruction_desc::operand_count )
+				.def( "is_branching_virt", &instruction_desc::is_branching_virt )
+				.def( "is_branching_real", &instruction_desc::is_branching_real )
+				.def( "is_branching", &instruction_desc::is_branching )
+				.def( "reads_memory", &instruction_desc::reads_memory )
+				.def( "writes_memory", &instruction_desc::writes_memory )
+				.def( "accesses_memory", &instruction_desc::accesses_memory )
+				.def( "__repr__", &instruction_desc::to_string )
+				.def( "__str__", &instruction_desc::to_string )
 
-		/* Value Tracing */
-		tracer_py( m, "tracer" );
-
-		/* SymEx Integration */
-		variable_py( m, "variable" );
-	}
-
-
-	// VTIL Common
-	//
-	{
-		/* Utility */
-		fnv64_hash_py( m, "fnv64" );
-		fnv128_hash_py( m, "fnv128" );
-	}
-
-
-	// VTIL SymEx
-	//
-	{
-		/* Expressions */
-		unique_identifier_py( m, "uid" );
-		expression_py( m, "expression" );
-	}
-
-
-	// External
-	//
-	{
-		arm64_reg_py( m, "arm64_reg" );
-		x86_reg_py( m, "x86_reg" );
-	}
-
-
-#ifdef VERSION_INFO
-	m.attr("__version__") = VERSION_INFO;
-#else
-	m.attr("__version__") = "dev";
-#endif
+				// End
+				//
+				;
+		}
+	};
 }

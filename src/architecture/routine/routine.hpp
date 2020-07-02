@@ -83,10 +83,10 @@ namespace vtil::python
 		private:
 		static std::vector<register_desc> alloc_helper( routine& rtn, py::args args )
 		{
-			std::vector<register_desc> tmps;
-			for ( size_t i = 0; i < args.size(); ++i )
-				tmps.push_back( rtn.alloc( py::cast<bitcnt_t>( args[ i ] ) ) );
-			return tmps;
+			std::vector<register_desc> regs( args.size() );
+			for ( auto [i, o] : zip( regs, args ) )
+				i = rtn.alloc( py::cast<bitcnt_t>( o ) );
+			return regs;
 		}
 	};
 }

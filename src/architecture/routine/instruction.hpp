@@ -34,91 +34,51 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | module.cpp              | https://github.com/vtil-project/VTIL-Core      |
+// | instruction.hpp         | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
-// |                         | https://github.com/aquynh/capstone/            |
-// |                         | https://github.com/keystone-engine/keystone/   |
 // |--------------------------------------------------------------------------|
 //
+#pragma once
+
+#include <vtil/vtil>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
-#include "architecture/arch/architecture_identifier.hpp"
-#include "architecture/arch/register_desc.hpp"
-#include "architecture/arch/operand.hpp"
-#include "architecture/arch/instruction_desc.hpp"
-#include "architecture/routine/instruction.hpp"
-#include "architecture/routine/basic_block.hpp"
-#include "architecture/routine/routine.hpp"
-#include "architecture/trace/tracer.hpp"
-#include "architecture/symex/variable.hpp"
-
-#include "common/util/fnv64.hpp"
-#include "common/util/fnv128.hpp"
-
-#include "symex/expressions/unique_identifier.hpp"
-#include "symex/expressions/expression.hpp"
-
-#include "external/arm64_reg.hpp"
-#include "external/x86_reg.hpp"
-
-using namespace vtil::python;
+using namespace vtil;
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(vtil, m) {
-
-	// VTIL Architecture
-	//
+namespace vtil::python
+{
+	class instruction_py : public py::class_<instruction>
 	{
-		/* Architecture */
-		architecture_identifier_py( m, "architecture_identifier" );
-		register_desc_py( m, "register_desc" );
-		operand_py( m, "operand" );
-		instruction_desc_py( m, "instruction_desc" );
+		public:
+		instruction_py( const handle& scope, const char* name )
+			: class_( scope, name )
+		{
+			( *this )
+				// Properties
+				//
+				.def_readwrite( "base", &instruction::base )
+				.def_readwrite( "operands", &instruction::operands )
+				.def_readwrite( "vip", &instruction::vip )
+				.def_readwrite( "sp_offset", &instruction::sp_offset )
+				.def_readwrite( "sp_index", &instruction::sp_index )
+				.def_readwrite( "sp_reset", &instruction::sp_reset )
+				
+				// Functions
+				//
+				.def( "is_valid", &instruction::is_valid )
+				.def( "make_volatile", &instruction::make_volatile )
+				.def( "is_pseudo", &instruction::is_pseudo )
+				.def( "is_volatile", &instruction::is_volatile )
+				.def( "access_size", &instruction::access_size )
+				.def( "memory_location", py::overload_cast<>( &instruction::memory_location ) )
+				.def( "__repr__", &instruction::to_string )
+				.def( "__str__", &instruction::to_string )
 
-		/* Instruction Stream */
-		instruction_py( m, "instruction" );
-		basic_block_py( m, "basic_block" );
-		routine_py( m, "routine" );
-
-		/* Value Tracing */
-		tracer_py( m, "tracer" );
-
-		/* SymEx Integration */
-		variable_py( m, "variable" );
-	}
-
-
-	// VTIL Common
-	//
-	{
-		/* Utility */
-		fnv64_hash_py( m, "fnv64" );
-		fnv128_hash_py( m, "fnv128" );
-	}
-
-
-	// VTIL SymEx
-	//
-	{
-		/* Expressions */
-		unique_identifier_py( m, "uid" );
-		expression_py( m, "expression" );
-	}
-
-
-	// External
-	//
-	{
-		arm64_reg_py( m, "arm64_reg" );
-		x86_reg_py( m, "x86_reg" );
-	}
-
-
-#ifdef VERSION_INFO
-	m.attr("__version__") = VERSION_INFO;
-#else
-	m.attr("__version__") = "dev";
-#endif
+				// End
+				//
+				;
+		}
+	};
 }

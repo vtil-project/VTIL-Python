@@ -20,9 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\architecture\arch\architecture_identifier.hpp" />
+    <ClInclude Include="src\architecture\arch\instruction_desc.hpp" />
     <ClInclude Include="src\architecture\arch\operand.hpp" />
     <ClInclude Include="src\architecture\arch\register_desc.hpp" />
     <ClInclude Include="src\architecture\routine\basic_block.hpp" />
+    <ClInclude Include="src\architecture\routine\instruction.hpp" />
+    <ClInclude Include="src\architecture\routine\routine.hpp" />
     <ClInclude Include="src\architecture\symex\variable.hpp" />
     <ClInclude Include="src\architecture\trace\tracer.hpp" />
     <ClInclude Include="src\common\util\fnv128.hpp" />
@@ -198,7 +201,8 @@
       </StackCommitSize>
     </Link>
     <PostBuildEvent>
-      <Command>copy /V /Y /B $(SolutionDir)external\core\Keystone\build\llvm\bin\keystone.dll $(SolutionDir)build\$(Platform)\$(Configuration)\keystone.dll</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
