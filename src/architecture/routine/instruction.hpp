@@ -73,8 +73,8 @@ namespace vtil::python
 				.def( "is_volatile", &instruction::is_volatile )
 				.def( "access_size", &instruction::access_size )
 				.def( "memory_location", py::overload_cast<>( &instruction::memory_location ) )
-				.def( "__repr__", &instruction::to_string )
-				.def( "__str__", &instruction::to_string )
+				.def( "__repr__", [ ] ( const instruction& ins ) { return ins.to_string( false ); } )
+				.def( "__str__", [ ] ( const instruction& ins ) { return ins.to_string( false ); } )
 
 				// End
 				//

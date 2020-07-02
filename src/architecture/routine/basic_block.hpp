@@ -57,8 +57,10 @@ namespace vtil::python
 		{
 			// Related
 			// 
-			py::class_<basic_block::iterator>( scope, "basic_block::iterator" );
-			py::class_<basic_block::const_iterator>( scope, "basic_block::const_iterator" );
+			py::class_<il_iterator>( scope, "il_iterator" )
+				.def( "get", [ ] ( const il_iterator& it ) { return *it; } );
+			py::class_<il_const_iterator>( scope, "il_const_iterator" )
+				.def( "get", [ ] ( const il_const_iterator& it ) { return *it; } );
 
 			( *this )
 				// Properties
