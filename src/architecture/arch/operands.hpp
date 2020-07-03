@@ -34,7 +34,7 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | instruction_desc.hpp    | https://github.com/vtil-project/VTIL-Core      |
+// | operands.hpp            | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
 // |--------------------------------------------------------------------------|
 //
@@ -49,59 +49,102 @@ namespace py = pybind11;
 
 namespace vtil::python
 {
-	class instruction_desc_py : public py::class_<instruction_desc>
+	class operand_py : public py::class_<operand>
 	{
 		public:
-		instruction_desc_py( const handle& scope, const char* name )
+		operand_py( const handle& scope, const char* name )
 			: class_( scope, name )
 		{
-			py::enum_<operand_type>( scope, "operand_type" )
-				.value( "invalid", operand_type::invalid )
+			py::class_<operand::immediate_t>( scope, "operand::immediate_t" )
+				// Constructor
+				//
+				.def( py::init<>() )
+				.def( py::init<uint64_t, bitcnt_t>() )
 
-				.value( "read_imm", operand_type::read_imm )
-				.value( "read_reg", operand_type::read_reg )
-				.value( "read_any", operand_type::read_any ).value( "read", operand_type::read_any )
+				// Properties
+				//
+				.def_readwrite( "i64", &operand::immediate_t::i64 )
+				.def_readwrite( "u64", &operand::immediate_t::u64 )
 
-				.value( "write", operand_type::write )
-				.value( "readwrite", operand_type::readwrite )
+				.def_readwrite( "bit_count", &operand::immediate_t::bit_count )
+
+				// Functions
+				//
+				.def( "reduce", py::overload_cast< >( &operand::immediate_t::reduce ) )
 				;
 
 			( *this )
 				// Properties
 				//
-				.def_readonly( "name", &instruction_desc::name )
-				.def_readonly( "operand_types", &instruction_desc::operand_types )
-				.def_readonly( "is_volatile", &instruction_desc::is_volatile )
-				.def_readonly( "symbolic_operator", &instruction_desc::symbolic_operator )
-				.def_readonly( "branch_operands_rip", &instruction_desc::branch_operands_rip )
-				.def_readonly( "branch_operands_vip", &instruction_desc::branch_operands_vip )
-				.def_readonly( "memory_operand_index", &instruction_desc::memory_operand_index )
-				.def_readonly( "memory_write", &instruction_desc::memory_write )
-				.def_readonly( "is_volatile", &instruction_desc::is_volatile )
+				.def_readwrite( "descriptor", &operand::descriptor )
 
 				// Functions
 				//
-				.def( "operand_count", &instruction_desc::operand_count )
+				.def( "imm", py::overload_cast< >( &operand::imm ) )
+				.def( "reg", py::overload_cast< >( &operand::reg ) )
 
-				.def( "is_branching_virt", &instruction_desc::is_branching_virt )
-				.def( "is_branching_real", &instruction_desc::is_branching_real )
-				.def( "is_branching", &instruction_desc::is_branching )
+				.def( "size", &operand::size )
+				.def( "bit_count", &operand::bit_count )
 
-				.def( "reads_memory", &instruction_desc::reads_memory )
-				.def( "writes_memory", &instruction_desc::writes_memory )
-				.def( "accesses_memory", &instruction_desc::accesses_memory )
+				.def( "is_register", &operand::is_register )
+				.def( "is_immediate", &operand::is_immediate )
+				.def( "is_valid", &operand::is_valid )
 
-				.def( "reduce", py::overload_cast< >( &instruction_desc::reduce ) )
+				.def( "reduce", py::overload_cast< >( &operand::reduce ) )
 
-				.def( "__repr__", &instruction_desc::to_string )
-				.def( "__str__", &instruction_desc::to_string )
-				.def( "__eq__", &instruction_desc::operator== )
-				.def( "__ne__", &instruction_desc::operator!= )
-				.def( "__lt__", &instruction_desc::operator< )
+				.def( "__str__", &operand::to_string )
+				.def( "__repr__", &operand::to_string )
 
 				// End
 				//
 				;
+		}
+	};
+}
+
+namespace pybind11::detail
+{
+	template<> struct type_caster<operand> : public type_caster_base<operand>
+	{
+		using base = type_caster_base<operand>;
+
+		template<typename T>
+		bool explicit_cast( handle src )
+		{
+			return py::isinstance<T>( src ) && ( this->value = new operand( py::cast<T>( src ) ) );
+		}
+
+		public:
+		bool load( handle src, bool convert )
+		{
+			if ( py::isinstance<py::int_>( src ) )
+			{
+				auto value = py::cast<uint64_t>( src );
+				this->value = new operand( value, sizeof( value ) * 8 );
+				return true;
+			}
+
+			return explicit_cast< arm64_reg >( src ) || explicit_cast< x86_reg >( src ) || explicit_cast< register_desc >( src );
+		}
+
+		static handle cast( operand* src, return_value_policy policy, handle parent )
+		{
+			return base::cast( src, policy, parent );
+		}
+
+		static handle cast( const operand* src, return_value_policy policy, handle parent )
+		{
+			return base::cast( src, policy, parent );
+		}
+
+		static handle cast( operand& src, return_value_policy policy, handle parent )
+		{
+			return base::cast( src, policy, parent );
+		}
+
+		static handle cast( const operand& src, return_value_policy policy, handle parent )
+		{
+			return base::cast( src, policy, parent );
 		}
 	};
 }

@@ -42,6 +42,7 @@
 
 #include <vtil/vtil>
 #include <pybind11/pybind11.h>
+#include <pybind11/functional.h>
 
 using namespace vtil;
 namespace py = pybind11;
@@ -68,16 +69,18 @@ namespace vtil::python
 				.def_readonly( "entry_point", &routine::entry_point )
 				.def_readwrite( "routine_convention", &routine::routine_convention )
 				.def_readwrite( "subroutine_convention", &routine::subroutine_convention )
-				
+
 				// Functions
 				//
 				.def( "alloc", &alloc_helper )
+				.def( "for_each", &routine::for_each )
 				.def( "get_cconv", &routine::get_cconv )
 				.def( "set_cconv", &routine::set_cconv )
+				.def( "clone", &routine::clone )
 
-				// Routines are explicitly deleted.
+				// End
 				//
-				.def( "destroy", [ ] ( routine* rtn ) { delete rtn; } );
+				;
 		}
 
 		private:

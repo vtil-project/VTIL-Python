@@ -34,7 +34,7 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | operand.hpp             | https://github.com/vtil-project/VTIL-Core      |
+// | call_convention.hpp     | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
 // |--------------------------------------------------------------------------|
 //
@@ -42,6 +42,7 @@
 
 #include <vtil/vtil>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 using namespace vtil;
 namespace py = pybind11;
@@ -49,76 +50,67 @@ namespace py = pybind11;
 
 namespace vtil::python
 {
-	class operand_py : public py::class_<operand>
+	struct call_convention_amd64_py
+	{
+		// Dummy amd64 struct
+		//
+	};
+
+	struct call_convention_arm64_py
+	{
+		// Dummy arm64 struct
+		//
+	};
+
+	class call_convention_py : public py::class_<call_convention>
 	{
 		public:
-		operand_py( const handle& scope, const char* name )
+		call_convention_py( const handle& scope, const char* name )
 			: class_( scope, name )
 		{
-			( *this )
-				// Properties
+			py::class_<call_convention_amd64_py>( scope, "call_convetion::amd64" )
+				// Static properties
 				//
-				.def_readwrite( "descriptor", &operand::descriptor )
-
-				// Functions
-				//
-				.def( "imm", py::overload_cast< >( &operand::imm ) )
-				.def( "reg", py::overload_cast< >( &operand::reg ) )
-				.def( "size", &operand::size )
-				.def( "bit_count", &operand::bit_count )
-				.def( "to_string", &operand::to_string )
-				.def( "is_register", &operand::is_register )
-				.def( "is_immediate", &operand::is_immediate )
-				.def( "is_valid", &operand::is_valid )
-				.def( "reduce", py::overload_cast< >( &operand::reduce ) )
+				.def_readonly_static( "preserve_all_convention", &amd64::preserve_all_convention )
+				.def_readonly_static( "default_call_convention", &amd64::default_call_convention )
 
 				// End
 				//
 				;
-		}
-	};
-}
 
-namespace pybind11::detail
-{
-	template<> struct type_caster<operand> : public type_caster_base<operand>
-	{
-		using base = type_caster_base<operand>;
+			py::class_<call_convention_arm64_py>( scope, "call_convetion::arm64" )
+				// Static properties
+				//
+				.def_readonly_static( "preserve_all_convention", &arm64::preserve_all_convention )
+				.def_readonly_static( "default_call_convention", &arm64::default_call_convention )
+				.def_readonly_static( "vector_call_convention", &arm64::vector_call_convention )
 
-		template<typename T>
-		bool explicit_cast( handle src )
-		{
-			return py::isinstance<T>( src ) && ( this->value = new operand( py::cast<T>( src ) ) );
-		}
+				// End
+				//
+				;
 
-		public:
-		bool load( handle src, bool convert )
-		{
-			if ( py::isinstance<py::int_>( src ) )
-			{
-				auto value = py::cast<uint64_t>( src );
-				this->value = new operand( value, sizeof( value ) * 8 );
-				return true;
-			}
+			( *this )
+				// Constructors
+				//
+				.def( py::init<std::vector<register_desc>, std::vector<register_desc>, std::vector<register_desc>, register_desc, size_t, bool>() )
 
-			return explicit_cast< arm64_reg >( src ) || explicit_cast< x86_reg >( src ) || explicit_cast< register_desc >( src );
-		}
+				// Static properties
+				//
+				.def_property_readonly_static( "amd64", [ ] ( py::object& ) { static auto instance = call_convention_amd64_py(); return instance; } )
+				.def_property_readonly_static( "arm64", [ ] ( py::object& ) { static auto instance = call_convention_arm64_py(); return instance; } )
 
-		static handle cast( operand* src, return_value_policy policy, handle parent )
-		{
-			return base::cast( src, policy, parent );
-		}
-		static handle cast( const operand* src, return_value_policy policy, handle parent )
-		{
-			return base::cast( src, policy, parent );
-		}
-		static handle cast( operand& src, return_value_policy policy, handle parent )
-		{
-			return base::cast( src, policy, parent );
-		}
-		static handle cast( const operand& src, return_value_policy policy, handle parent )
-		{
-			return base::cast( src, policy, parent );
+				// Properties
+				//
+				.def_readonly( "volatile_registers", &call_convention::volatile_registers )
+				.def_readonly( "param_registers", &call_convention::param_registers )
+				.def_readonly( "retval_registers", &call_convention::retval_registers )
+				.def_readonly( "frame_register", &call_convention::frame_register )
+				.def_readonly( "shadow_space", &call_convention::shadow_space )
+				.def_readonly( "purge_stack", &call_convention::purge_stack )
+
+				// End
+				//
+				;
 		}
 	};
 }

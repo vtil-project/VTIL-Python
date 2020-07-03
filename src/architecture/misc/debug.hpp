@@ -34,97 +34,44 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | module.cpp              | https://github.com/vtil-project/VTIL-Core      |
+// | debug.hpp               | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
-// |                         | https://github.com/aquynh/capstone/            |
-// |                         | https://github.com/keystone-engine/keystone/   |
 // |--------------------------------------------------------------------------|
 //
+#pragma once
+
+#include <vtil/vtil>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "architecture/arch/identifier.hpp"
-#include "architecture/arch/instruction_desc.hpp"
-#include "architecture/arch/operands.hpp"
-#include "architecture/arch/register_desc.hpp"
-#include "architecture/routine/basic_block.hpp"
-#include "architecture/routine/call_convention.hpp"
-#include "architecture/routine/instruction.hpp"
-#include "architecture/routine/routine.hpp"
-#include "architecture/misc/debug.hpp"
-#include "architecture/trace/tracer.hpp"
-#include "architecture/symex/variable.hpp"
-
-#include "common/util/fnv64.hpp"
-#include "common/util/fnv128.hpp"
-
-#include "symex/expressions/unique_identifier.hpp"
-#include "symex/expressions/expression.hpp"
-
-#include "external/arm64_reg.hpp"
-#include "external/x86_reg.hpp"
-
-using namespace vtil::python;
+using namespace vtil::debug;
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(vtil, m) {
-
-	// VTIL Architecture
-	//
+namespace vtil::python
+{
+	struct debug_dummy_py
 	{
-		/* Architecture */
-		architecture_identifier_py( m, "architecture_identifier" );
-		instruction_desc_py( m, "instruction_desc" );
-		operand_py( m, "operand" );
-		register_desc_py( m, "register_desc" );
+		// Dummy debug struct
+		//
+	};
 
-		/* Instruction Stream */
-		basic_block_py( m, "basic_block" );
-		call_convention_py( m, "call_convention" );
-		instruction_py( m, "instruction" );
-		routine_py( m, "routine" );
-
-		/* Miscellaneous */
-		debug_py( m, "debug" );
-
-		/* Value Tracing */
-		tracer_py( m, "tracer" );
-
-		/* SymEx Integration */
-		variable_py( m, "variable" );
-	}
-
-
-	// VTIL Common
-	//
+	class debug_py : public py::class_<debug_dummy_py>
 	{
-		/* Utility */
-		fnv64_hash_py( m, "fnv64" );
-		fnv128_hash_py( m, "fnv128" );
-	}
+		public:
+		debug_py( const handle& scope, const char* name )
+			: class_( scope, name )
+		{
+			( *this )
+				// Static helpers
+				//
+				.def( "dump", py::overload_cast< const instruction&, const instruction* >( &dump ) )
+				.def( "dump", py::overload_cast< const basic_block*, std::set<const basic_block*>* >( &dump ) )
+				.def( "dump", py::overload_cast< const routine* >( &dump ) )
 
-
-	// VTIL SymEx
-	//
-	{
-		/* Expressions */
-		unique_identifier_py( m, "uid" );
-		expression_py( m, "expression" );
-	}
-
-
-	// External
-	//
-	{
-		arm64_reg_py( m, "arm64_reg" );
-		x86_reg_py( m, "x86_reg" );
-	}
-
-
-#ifdef VERSION_INFO
-	m.attr("__version__") = VERSION_INFO;
-#else
-	m.attr("__version__") = "dev";
-#endif
+				// End
+				//
+				;
+		}
+	};
 }

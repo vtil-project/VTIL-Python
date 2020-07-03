@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\architecture\arch\architecture_identifier.hpp" />
+    <ClInclude Include="src\architecture\arch\identifier.hpp" />
     <ClInclude Include="src\architecture\arch\instruction_desc.hpp" />
-    <ClInclude Include="src\architecture\arch\operand.hpp" />
+    <ClInclude Include="src\architecture\arch\operands.hpp" />
     <ClInclude Include="src\architecture\arch\register_desc.hpp" />
+    <ClInclude Include="src\architecture\misc\debug.hpp" />
     <ClInclude Include="src\architecture\routine\basic_block.hpp" />
+    <ClInclude Include="src\architecture\routine\call_convention.hpp" />
     <ClInclude Include="src\architecture\routine\instruction.hpp" />
     <ClInclude Include="src\architecture\routine\routine.hpp" />
     <ClInclude Include="src\architecture\symex\variable.hpp" />

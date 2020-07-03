@@ -72,13 +72,7 @@
     <ClInclude Include="src\external\arm64_reg.hpp">
       <Filter>External</Filter>
     </ClInclude>
-    <ClInclude Include="src\architecture\arch\architecture_identifier.hpp">
-      <Filter>Architecture\Architecture</Filter>
-    </ClInclude>
     <ClInclude Include="src\architecture\arch\register_desc.hpp">
-      <Filter>Architecture\Architecture</Filter>
-    </ClInclude>
-    <ClInclude Include="src\architecture\arch\operand.hpp">
       <Filter>Architecture\Architecture</Filter>
     </ClInclude>
     <ClInclude Include="src\architecture\routine\basic_block.hpp">
@@ -113,6 +107,18 @@
     </ClInclude>
     <ClInclude Include="src\architecture\arch\instruction_desc.hpp">
       <Filter>Architecture\Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\architecture\arch\identifier.hpp">
+      <Filter>Architecture\Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\architecture\arch\operands.hpp">
+      <Filter>Architecture\Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\architecture\routine\call_convention.hpp">
+      <Filter>Architecture\Instruction Stream</Filter>
+    </ClInclude>
+    <ClInclude Include="src\architecture\misc\debug.hpp">
+      <Filter>Architecture\Miscellaneous</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -31,12 +31,12 @@
 // Furthermore, the following pieces of software have additional copyrights
 // licenses, and/or restrictions:
 //
-// |------------------------------------------------------------------------------|
-// | File name                   | Link for further information                   |
-// |-----------------------------|------------------------------------------------|
-// | architecture_identifier.hpp | https://github.com/vtil-project/VTIL-Core      |
-// |                             | https://github.com/pybind/pybind11             |
-// |------------------------------------------------------------------------------|
+// |--------------------------------------------------------------------------|
+// | File name               | Link for further information                   |
+// |-------------------------|------------------------------------------------|
+// | identifier.hpp          | https://github.com/vtil-project/VTIL-Core      |
+// |                         | https://github.com/pybind/pybind11             |
+// |--------------------------------------------------------------------------|
 //
 #pragma once
 

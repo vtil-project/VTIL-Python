@@ -61,10 +61,13 @@ namespace vtil::python
 				.def_readwrite( "base", &instruction::base )
 				.def_readwrite( "operands", &instruction::operands )
 				.def_readwrite( "vip", &instruction::vip )
+
 				.def_readwrite( "sp_offset", &instruction::sp_offset )
 				.def_readwrite( "sp_index", &instruction::sp_index )
 				.def_readwrite( "sp_reset", &instruction::sp_reset )
-				
+
+				.def_readwrite( "explicit_volatile", &instruction::explicit_volatile )
+
 				// Functions
 				//
 				.def( "is_valid", &instruction::is_valid )
@@ -72,7 +75,10 @@ namespace vtil::python
 				.def( "is_pseudo", &instruction::is_pseudo )
 				.def( "is_volatile", &instruction::is_volatile )
 				.def( "access_size", &instruction::access_size )
-				.def( "memory_location", py::overload_cast<>( &instruction::memory_location ) )
+				.def( "memory_location", py::overload_cast< >( &instruction::memory_location ) )
+				.def( "enum_operands", py::overload_cast< >( &instruction::enum_operands ) )
+				.def( "reduce", py::overload_cast< >( &instruction::reduce ) )
+
 				.def( "__repr__", [ ] ( const instruction& ins ) { return ins.to_string( false ); } )
 				.def( "__str__", [ ] ( const instruction& ins ) { return ins.to_string( false ); } )
 
