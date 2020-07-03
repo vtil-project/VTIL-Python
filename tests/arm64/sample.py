@@ -11,7 +11,9 @@ def main():
        .push(x0)        \
        .mov(x1, x0)     \
        .push(x1)        \
+       .ldd(t0, sp, 4)  \
        .add(t0, 100)    \
+       .store(sp, 4, t0)\
        .pop(x1)         \
        .pop(x0)         \
        .mov(x0, x1)     \
