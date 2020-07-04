@@ -51,6 +51,42 @@ namespace py = pybind11;
 
 namespace vtil::python
 {
+	class memory_input_stream : public std::istream
+	{
+		class memory_in_buffer : public std::basic_streambuf<char>
+		{
+			public:
+			memory_in_buffer( const uint8_t* p, size_t l )
+			{
+				setg( ( char* ) p, ( char* ) p, ( char* ) p + l );
+			}
+		};
+
+		memory_in_buffer _buffer;
+
+		public:
+		memory_input_stream( const uint8_t* p, size_t l ) : std::istream( &_buffer ), _buffer( p, l )
+		{
+			rdbuf( &_buffer );
+		}
+	};
+
+	class memory_output_buffer : public std::streambuf
+	{
+		std::string data;
+
+		protected:
+		virtual int_type overflow( int_type c )
+		{
+			if ( c != EOF )
+				data.push_back( c );
+			return c;
+		}
+
+		public:
+		std::string& get_contents() { return data; }
+	};
+
 	class routine_py : public py::class_<routine>
 	{
 		public:
@@ -60,8 +96,11 @@ namespace vtil::python
 			( *this )
 				// Static helpers
 				//
-				.def( "load", &load_routine )
-				.def( "save", &save_routine )
+				.def_static( "load", &load_routine, py::arg( "path" ) )
+				.def( "save", &save_routine, py::arg( "path" ) )
+
+				.def_static( "load", py::overload_cast< py::object >( &load ), py::arg("fd") )
+				.def( "save", &save, py::arg("fd"), py::arg("as_bytes") = true )
 
 				// Properties
 				//
@@ -91,6 +130,55 @@ namespace vtil::python
 			for ( auto [i, o] : zip( regs, args ) )
 				i = rtn.alloc( py::cast<bitcnt_t>( o ) );
 			return regs;
+		}
+
+		static routine* load( py::object obj )
+		{
+			if ( !( py::hasattr( obj, "read" ) ) )
+			{
+				throw py::type_error( "Argument is not an object of a file-like type" );
+			}
+
+			// Use Python API to read from file
+			//
+			auto file_data = obj.attr( "read" )( );
+
+			// Convert into string
+			//
+			if ( !py::isinstance<py::bytes>( file_data ) && !py::isinstance<py::bytes>( file_data ) )
+				return nullptr;
+
+			std::string data = py::isinstance<py::bytes>( file_data ) ? std::string( file_data.cast<py::bytes>() ) : std::string( file_data.cast<py::str>() );
+			return load( data );
+		}
+
+		static routine* load( const std::string& data )
+		{
+			memory_input_stream stream( ( uint8_t* ) &data[ 0 ], data.size() );
+			routine* rtn = nullptr;
+			deserialize( stream, rtn );
+
+			return rtn;
+		}
+
+		static void save( routine* rtn, py::object obj, bool as_bytes = true )
+		{
+			if ( !( py::hasattr( obj, "write" ) && py::hasattr( obj, "flush" ) ) )
+			{
+				throw py::type_error( "Argument is not an object of a file-like type" );
+			}
+
+			// Create an in memory output buffer
+			//
+			memory_output_buffer out_buffer;
+			std::ostream out( &out_buffer );
+
+			// Write to the buffer and then use Python API to write to file
+			serialize( out, rtn );
+			if ( as_bytes )
+				obj.attr( "write" )( py::bytes( out_buffer.get_contents() ) );
+			else
+				obj.attr( "write" )( out_buffer.get_contents() );
 		}
 	};
 }
