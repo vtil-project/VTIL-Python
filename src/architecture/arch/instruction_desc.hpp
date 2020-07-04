@@ -42,6 +42,7 @@
 
 #include <vtil/vtil>
 #include <pybind11/pybind11.h>
+#include <pybind11/operators.h>
 
 using namespace vtil;
 namespace py = pybind11;
@@ -95,9 +96,9 @@ namespace vtil::python
 
 				.def( "__repr__", &instruction_desc::to_string )
 				.def( "__str__", &instruction_desc::to_string )
-				.def( "__eq__", &instruction_desc::operator== )
-				.def( "__ne__", &instruction_desc::operator!= )
-				.def( "__lt__", &instruction_desc::operator< )
+				.def( py::self == py::self )
+				.def( py::self != py::self )
+				.def( py::self < py::self )
 
 				// End
 				//
