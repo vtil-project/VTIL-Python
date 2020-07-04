@@ -109,23 +109,6 @@ namespace vtil::python
 		}
 	};
 
-	static size_t pass_paralell( pass_interface_t* pass_interface, routine* rtn )
-	{
-		std::atomic<size_t> n = { 0 };
-		std::vector<std::thread> pool;
-		pool.reserve( rtn->explored_blocks.size() );
-		rtn->for_each( [ & ] ( auto* blk )
-					   {
-						   pool.emplace_back( [ & ] ( auto* b ) { n += pass_interface->pass( b, true ); }, blk );
-					   } );
-		//py::gil_scoped_release guard{};
-		for ( auto& thread : pool )
-		{
-			thread.join();
-		}
-		return n;
-	}
-
 	class pass_interface_py : public py::class_<pass_interface_t, pass_interface_trampoline>
 	{
 		public:

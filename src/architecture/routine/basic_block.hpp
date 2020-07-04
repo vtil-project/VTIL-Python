@@ -94,7 +94,6 @@ namespace vtil::python
 				.def( "push_back", [ ] ( basic_block& bbl, instruction& ins ) { bbl.push_back( ins ); } )
 				.def( "is_complete", &basic_block::is_complete )
 
-				//.def( "begin", py::overload_cast< vip_t, vtil::architecture_identifier >( &basic_block::begin ), py::arg( "arg0" ) = architecture_amd64 )
 				.def( "fork", &basic_block::fork )
 				.def( "tmp", [ ] ( basic_block& bbl, bitcnt_t size ) { return bbl.tmp( size ); } )
 				.def( "tmp", &tmp_helper )
