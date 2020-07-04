@@ -73,6 +73,11 @@ namespace py = pybind11;
 
 
 PYBIND11_MODULE(vtil, m) {
+	// Hook error function
+	vtil::logger::error_hook = [ ] ( std::string msg )
+	{
+		throw std::runtime_error( msg );
+	};
 
 	// VTIL Architecture
 	//
