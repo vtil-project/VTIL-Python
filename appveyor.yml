@@ -1,0 +1,11 @@
+version: 1.0.{build}
+image: Visual Studio 2019
+install:
+- cmd: git submodule update --init --recursive --no-recommend-shallow
+build_script:
+- cmd: mkdir build && cd build
+- cmd: cmake -DPYTHON_EXECUTABLE=C:\Python37-x64\python.exe ..
+- cmd: cmake --build . --config Release
+- cmd: cmake --install . --component pyd --prefix ..
+artifacts:
+- path: vtil.pyd
