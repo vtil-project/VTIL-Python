@@ -19,9 +19,15 @@ source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE VTIL)
 
+if(WIN32)
+    set(EXTENSION ".pyd")
+else()
+	set(EXTENSION ".so")
+endif()
+
 install(PROGRAMS
     $<TARGET_FILE:${PROJECT_NAME}>
     DESTINATION .
     COMPONENT pyd
-    RENAME vtil.pyd
+    RENAME vtil${EXTENSION}
     )

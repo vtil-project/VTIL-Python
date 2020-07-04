@@ -21,7 +21,7 @@ def main():
        .sub(t0, 100)    \
        .te(zf, t0, 0)
     
-    print(f'jz taken: {tracer()(variable(bbl.end(), zf))}')
+    print('jz taken: {}'.format(tracer()(variable(bbl.end(), zf))))
 
 
 if __name__ == '__main__':
