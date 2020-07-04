@@ -34,7 +34,7 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | routine.hpp             | https://github.com/vtil-project/VTIL-Core      |
+// | cached_tracer.hpp       | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
 // |--------------------------------------------------------------------------|
 //
@@ -42,8 +42,6 @@
 
 #include <vtil/vtil>
 #include <pybind11/pybind11.h>
-#include <pybind11/functional.h>
-#include <pybind11/iostream.h>
 
 using namespace vtil;
 namespace py = pybind11;
@@ -51,46 +49,27 @@ namespace py = pybind11;
 
 namespace vtil::python
 {
-	class routine_py : public py::class_<routine>
+	class cached_tracer_py : public py::class_<cached_tracer, tracer>
 	{
 		public:
-		routine_py( const handle& scope, const char* name )
+		cached_tracer_py( const handle& scope, const char* name )
 			: class_( scope, name )
 		{
 			( *this )
-				// Static helpers
+				// Constructor
 				//
-				.def( "load", &load_routine )
-				.def( "save", &save_routine )
-
-				// Properties
-				//
-				.def_readonly( "arch_id", &routine::arch_id )
-				.def_readonly( "explored_blocks", &routine::explored_blocks )
-				.def_readonly( "entry_point", &routine::entry_point )
-				.def_readwrite( "routine_convention", &routine::routine_convention )
-				.def_readwrite( "subroutine_convention", &routine::subroutine_convention )
+				.def( py::init<>() )
+				.def( py::init<const cached_tracer&>() )
 
 				// Functions
 				//
-				.def( "alloc", &alloc_helper )
-				.def( "for_each", &routine::for_each )
-				.def( "get_cconv", &routine::get_cconv )
-				.def( "set_cconv", &routine::set_cconv )
-				.def( "clone", &routine::clone )
+				.def( "trace", &cached_tracer::trace )
+				.def( "flush", py::overload_cast< >( &cached_tracer::flush ) )
+				.def( "flush", py::overload_cast< basic_block* >( &cached_tracer::flush ) )
 
 				// End
 				//
 				;
-		}
-
-		private:
-		static std::vector<register_desc> alloc_helper( routine& rtn, py::args args )
-		{
-			std::vector<register_desc> regs( args.size() );
-			for ( auto [i, o] : zip( regs, args ) )
-				i = rtn.alloc( py::cast<bitcnt_t>( o ) );
-			return regs;
 		}
 	};
 }

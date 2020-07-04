@@ -57,6 +57,22 @@ namespace vtil::python
 		{
 			// Related
 			//
+			py::class_<access_details>( scope, "access_details" )
+				// Properties
+				//
+				.def_readwrite( "bit_offset", &access_details::bit_offset )
+				.def_readwrite( "bit_count", &access_details::bit_count )
+
+				.def_readwrite( "read", &access_details::read )
+				.def_readwrite( "write", &access_details::write )
+				.def_readwrite( "unknown", &access_details::unknown )
+
+				.def( "is_unknown", &access_details::is_unknown )
+
+				// End
+				//
+				;
+
 			py::class_<variable::memory_t>( scope, "variable::memory_t" )
 				// Constructor
 				//

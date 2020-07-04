@@ -63,6 +63,10 @@ namespace vtil::python
 				.def( "get", [ ] ( const il_const_iterator& it ) { return *it; } );
 
 			( *this )
+				// Constructor
+				//
+				.def( py::init( py::overload_cast< vip_t, vtil::architecture_identifier >( &basic_block::begin ) ), py::arg("entry_vip"), py::arg("arch_id") = architecture_amd64 )
+
 				// Properties
 				//
 				.def_readwrite( "owner", &basic_block::owner )
@@ -90,7 +94,7 @@ namespace vtil::python
 				.def( "push_back", [ ] ( basic_block& bbl, instruction& ins ) { bbl.push_back( ins ); } )
 				.def( "is_complete", &basic_block::is_complete )
 
-				.def( "begin", py::overload_cast< vip_t, vtil::architecture_identifier >( &basic_block::begin ), py::arg( "arg0" ) = architecture_amd64 )
+				//.def( "begin", py::overload_cast< vip_t, vtil::architecture_identifier >( &basic_block::begin ), py::arg( "arg0" ) = architecture_amd64 )
 				.def( "fork", &basic_block::fork )
 				.def( "tmp", [ ] ( basic_block& bbl, bitcnt_t size ) { return bbl.tmp( size ); } )
 				.def( "tmp", &tmp_helper )

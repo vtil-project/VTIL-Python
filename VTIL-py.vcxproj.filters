@@ -120,6 +120,12 @@
     <ClInclude Include="src\architecture\misc\debug.hpp">
       <Filter>Architecture\Miscellaneous</Filter>
     </ClInclude>
+    <ClInclude Include="src\architecture\trace\cached_tracer.hpp">
+      <Filter>Architecture\Value Tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\compiler\common\interface.hpp">
+      <Filter>Compiler\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\module.cpp" />
