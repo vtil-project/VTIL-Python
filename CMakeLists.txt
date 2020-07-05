@@ -1,5 +1,5 @@
 # Require at least CMake version 3.15 or later for FetchContent
-cmake_minimum_required(VERSION 3.14.5)
+cmake_minimum_required(VERSION 3.15)
 
 project(VTIL-Python)
 
@@ -13,7 +13,7 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     src/*.hpp
     )
 
-pybind11_add_module(${PROJECT_NAME} ${SOURCES})
+pybind11_add_module(${PROJECT_NAME} NO_EXTRAS ${SOURCES})
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SOURCES})
 
