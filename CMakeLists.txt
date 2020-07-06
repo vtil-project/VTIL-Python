@@ -7,6 +7,11 @@ project(VTIL-Python)
 add_subdirectory(external/core)
 add_subdirectory(external/pybind11)
 
+# Hack to build with -fPIC on Linux
+if(UNIX AND NOT APPLE)
+    target_compile_options(capstone-static PUBLIC -fPIC)
+endif()
+
 # Python module
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     src/*.cpp
@@ -22,7 +27,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE VTIL)
 if(WIN32)
     set(EXTENSION ".pyd")
 else()
-	set(EXTENSION ".so")
+    set(EXTENSION ".so")
 endif()
 
 install(PROGRAMS
