@@ -1,0 +1,5 @@
+cmake>=3.15
+cmake-generators
+GitPython
+future_fstrings
+pybind11

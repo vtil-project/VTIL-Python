@@ -372,5 +372,8 @@ FodyWeavers.xsd
 # Local History for Visual Studio Code
 .history/
 
+# Custom
 build*/
 *.pyd
+VTIL.egg-info/
+dist/

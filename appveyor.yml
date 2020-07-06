@@ -1,11 +1,79 @@
-version: 1.0.{build}
-image: Visual Studio 2019
-install:
-- cmd: git submodule update --init --recursive --no-recommend-shallow
-build_script:
-- cmd: mkdir build && cd build
-- cmd: cmake -DPYTHON_EXECUTABLE=C:\Python37-x64\python.exe ..
-- cmd: cmake --build . --config Release
-- cmd: cmake --install . --component pyd --prefix ..
-artifacts:
-- path: vtil.pyd
+version: 0.0.{build}
+
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: C:\Python38-x64
+      SDIST: true
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: C:\Python38-x64
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: C:\Python37-x64
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: C:\Python36-x64
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: C:\Python35-x64
+      BUILD: true
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      PYTHON: venv3.9
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      PYTHON: venv3.8
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      PYTHON: venv3.7
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      PYTHON: venv3.6
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      PYTHON: venv3.5
+      BUILD: true
+
+matrix:
+  fast_finish: true
+
+for:
+  -
+    matrix:
+      only:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+          SDIST: true
+    build_script:
+      - cmd: "%PYTHON%\\python.exe setup.py sdist"
+    artifacts:
+      - path: dist\*
+
+  -
+    matrix:
+      only:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+          BUILD: true
+    install:
+      - cmd: "%PYTHON%\\python.exe -m pip install --user --upgrade setuptools wheel -r requirements.txt"
+    build_script:
+      - cmd: "%PYTHON%\\python.exe setup.py bdist_wheel"
+    artifacts:
+      - path: dist\*
+
+  -
+    matrix:
+      only:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+          BUILD: true
+    install:
+      - sh: sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+      - sh: sudo apt update
+      - sh: sudo apt -y install gcc-10 g++-10
+      - sh: "$HOME/$PYTHON/bin/python -m pip install --upgrade setuptools wheel -r requirements.txt"
+      - sh: export CC=/usr/bin/gcc-10
+      - sh: export CXX=/usr/bin/g++-10
+    build_script:
+      - sh: "$HOME/$PYTHON/bin/python setup.py bdist_wheel"
+    artifacts:
+      - path: dist/*
