@@ -35,6 +35,22 @@ environment:
       PYTHON: venv3.5
       BUILD: true
 
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos
+      PYTHON: venv3.9
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos
+      PYTHON: venv3.8
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos
+      PYTHON: venv3.7
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos
+      PYTHON: venv3.6
+      BUILD: true
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos
+      PYTHON: venv3.5
+      BUILD: true
+
 matrix:
   fast_finish: true
 
@@ -75,5 +91,21 @@ for:
       - sh: export CXX=/usr/bin/g++-10
     build_script:
       - sh: "$HOME/$PYTHON/bin/python setup.py bdist_wheel"
+    artifacts:
+      - path: dist/*
+
+  -
+    matrix:
+      only:
+        - APPVEYOR_BUILD_WORKER_IMAGE: macos
+          BUILD: true
+    install:
+      - sh: brew install llvm@10 ninja
+      - sh: "~/$PYTHON/bin/python -m pip install --upgrade setuptools wheel -r requirements.txt"
+      - sh: export CC=/usr/local/opt/llvm/bin/clang
+      - sh: export CXX=/usr/local/opt/llvm/bin/clang++
+      - sh: export LDFLAGS="-L/usr/local/opt/llvm/lib -W1,-rpath,/usr/local/opt/llvm/lib"
+    build_script:
+      - sh: "~/$PYTHON/bin/python setup.py bdist_wheel"
     artifacts:
       - path: dist/*
