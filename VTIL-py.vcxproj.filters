@@ -130,4 +130,7 @@
   <ItemGroup>
     <ClCompile Include="src\module.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="VTIL-Python.licenseheader" />
+  </ItemGroup>
 </Project>
