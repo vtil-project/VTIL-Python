@@ -51,6 +51,9 @@
       <Project>{8163e74c-dde4-4507-bd3d-064cd95ff33b}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="VTIL-Python.licenseheader" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
