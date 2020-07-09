@@ -1,8 +1,8 @@
-from vtil import *
+from vtil.arch import *
 
 
 def main():
-    bbl = basic_block.begin(0, architecture_identifier.arm64)
+    bbl = basic_block(0, architecture_identifier.arm64)
     t0, zf = bbl.tmp(32, 1)
     x0, x1 = arm64_reg.X0, arm64_reg.X1
     sp = register_desc.SP
