@@ -19,22 +19,6 @@ environment:
       PYTHON: C:\Python35-x64
       BUILD: true
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      PYTHON: venv3.9
-      BUILD: true
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      PYTHON: venv3.8
-      BUILD: true
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      PYTHON: venv3.7
-      BUILD: true
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      PYTHON: venv3.6
-      BUILD: true
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      PYTHON: venv3.5
-      BUILD: true
-
     - APPVEYOR_BUILD_WORKER_IMAGE: macos
       PYTHON: venv3.9
       BUILD: true
