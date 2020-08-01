@@ -42,6 +42,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/functional.h>
 #include <pybind11/iostream.h>
+#include <pybind11/stl.h>
 
 using namespace vtil;
 namespace py = pybind11;
@@ -97,8 +98,8 @@ namespace vtil::python
 				.def_static( "load", &load_routine, py::arg( "path" ) )
 				.def( "save", &save_routine, py::arg( "path" ) )
 
-				.def_static( "load", py::overload_cast< py::object >( &load ), py::arg("fd") )
-				.def( "save", &save, py::arg("fd"), py::arg("as_bytes") = true )
+				.def_static( "load", py::overload_cast< py::object >( &load ), py::arg( "fd" ) )
+				.def( "save", &save, py::arg( "fd" ), py::arg( "as_bytes" ) = true )
 
 				// Properties
 				//
@@ -111,7 +112,7 @@ namespace vtil::python
 				// Functions
 				//
 				.def( "alloc", &alloc_helper )
-				.def( "for_each", &routine::for_each )
+				.def( "for_each", &for_each_helper, py::arg("fn"), py::arg("tagged") = false )
 				.def( "get_cconv", &routine::get_cconv )
 				.def( "set_cconv", &routine::set_cconv )
 				.def( "clone", &routine::clone )
@@ -128,6 +129,24 @@ namespace vtil::python
 			for ( auto [i, o] : zip( regs, args ) )
 				i = rtn.alloc( py::cast<bitcnt_t>( o ) );
 			return regs;
+		}
+
+		static void for_each_helper( routine& rtn, py::object obj, bool tagged )
+		{
+			// Workaround: pybind11 has an issue with detecting the proper type to use for the passed function,
+			// this is due to tagged_order being castable to void (aka None for python) hence we need the tagged argument
+			// to distingush the proper callback to use.
+			//
+			if ( tagged )
+			{
+				auto fn = obj.cast<std::function<enumerator::tagged_order( basic_block* )>>();
+				rtn.for_each( fn );
+			}
+			else
+			{
+				auto fn = obj.cast<std::function<void( basic_block* )>>();
+				rtn.for_each( fn );
+			}
 		}
 
 		static routine* load( py::object obj )

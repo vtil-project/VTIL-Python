@@ -32,7 +32,7 @@
 // |--------------------------------------------------------------------------|
 // | File name               | Link for further information                   |
 // |-------------------------|------------------------------------------------|
-// | fnv128.hpp              | https://github.com/vtil-project/VTIL-Core      |
+// | enumerator.hpp          | https://github.com/vtil-project/VTIL-Core      |
 // |                         | https://github.com/pybind/pybind11             |
 // |--------------------------------------------------------------------------|
 //
@@ -47,19 +47,28 @@ namespace py = pybind11;
 
 namespace vtil::python
 {
-	class fnv128_hash_py : public py::class_<fnv128_hash_t>
+	class enumerator_py : public py::class_<enumerator>
 	{
 		public:
-		fnv128_hash_py( const handle& scope, const char* name )
+		enumerator_py( const handle& scope, const char* name )
 			: class_( scope, name )
 		{
-			( *this )
-				// Functions
+			py::class_<enumerator::tagged_order>( scope, "TaggedOrder" )
+				// Members
 				//
-				.def( "as64", &fnv128_hash_t::as64 )
-				.def( "__eq__", [ ] ( const fnv128_hash_t& a, const fnv128_hash_t& b ) { return a == b; } )
-				.def( "__repr__", &fnv128_hash_t::to_string )
-				.def( "__str__", &fnv128_hash_t::to_string )
+				.def_readonly( "should_break", &enumerator::tagged_order::should_break )
+				.def_readonly( "global_break", &enumerator::tagged_order::global_break )
+
+				// End
+				//
+				;
+
+			( *this )
+				// Static Members
+				//
+				.def_property_readonly_static( "obreak", [ ] ( py::object& ) { return enumerator::obreak; } )
+				.def_property_readonly_static( "obreak_r", [ ] ( py::object& ) { return enumerator::obreak_r; } )
+				.def_property_readonly_static( "ocontinue", [ ] ( py::object& ) { return enumerator::ocontinue; } )
 
 				// End
 				//

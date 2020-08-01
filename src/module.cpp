@@ -56,7 +56,7 @@
 #include "architecture/symex/variable.hpp"
 
 #include "common/util/fnv64.hpp"
-#include "common/util/fnv128.hpp"
+#include "common/util/enumerator.hpp"
 
 #include "compiler/common/interface.hpp"
 
@@ -72,72 +72,76 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(vtil, m) {
 	// Hook error function
+	//
 	vtil::logger::error_hook = [ ] ( const std::string& msg )
 	{
 		throw std::runtime_error( msg );
 	};
 
+	// Namespaces
+	//
+	auto debugger = m.def_submodule( "debugger", "vtil::debugger" );
+	auto optimizer = m.def_submodule( "optimizer", "vtil::optimizer" );
+	auto symbolic = m.def_submodule( "symbolic", "vtil::symbolic" );
+
+
 	// VTIL Architecture
 	//
-	auto arch = m.def_submodule( "arch", "VTIL Architecture" );
 	{
 		/* Architecture */
-		architecture_identifier_py( arch, "architecture_identifier" );
-		instruction_desc_py( arch, "instruction_desc" );
-		operand_py( arch, "operand" );
-		register_desc_py( arch, "register_desc" );
+		architecture_identifier_py( m, "ArchID" );
+		instruction_desc_py( m, "InstructionDesc" );
+		operand_py( m, "Operand" );
+		register_desc_py( m, "RegisterDesc" );
 
 		/* Instruction Stream */
-		basic_block_py( arch, "basic_block" );
-		call_convention_py( arch, "call_convention" );
-		instruction_py( arch, "instruction" );
-		routine_py( arch, "routine" );
+		basic_block_py( m, "BasicBlock" );
+		call_convention_py( m, "CallConvetion" );
+		instruction_py( m, "Instruction" );
+		routine_py( m, "Routine" );
 
 		/* Miscellaneous */
-		debug_py( arch, "debug" );
+		debug_py( debugger, "Debug" );
 
 		/* Value Tracing */
-		tracer_py( arch, "tracer" );
-		cached_tracer_py( arch, "cached_tracer" );
+		tracer_py( m, "Tracer" );
+		cached_tracer_py( m, "CachedTracer" );
 
 		/* SymEx Integration */
-		variable_py( arch, "variable" );
+		variable_py( symbolic, "Variable" );
 	}
 
 
 	// VTIL Common
 	//
-	auto common = m.def_submodule( "common", "VTIL Common" );
 	{
 		/* Utility */
-		fnv64_hash_py( common, "fnv64" );
-		fnv128_hash_py( common, "fnv128" );
+		fnv64_hash_py( m, "FNV64" );
+		enumerator_py( m, "Enumerator" );
 	}
 
 
 	// VTIL Compiler
-	auto compiler = m.def_submodule( "compiler", "VTIL Compiler" );
 	{
 		/* Common */
-		pass_interface_py( compiler, "pass_interface" );
+		pass_interface_py( optimizer, "Interface" );
 	}
 
 
 	// VTIL SymEx
 	//
-	auto symex = m.def_submodule( "symex", "VTIL SymEx" );
 	{
 		/* Expressions */
-		unique_identifier_py( symex, "uid" );
-		expression_py( symex, "expression" );
+		unique_identifier_py( symbolic, "UID" );
+		expression_py( symbolic, "Expression" );
 	}
 
 
 	// External
 	//
 	{
-		arm64_reg_py( arch, "arm64_reg" );
-		x86_reg_py( arch, "x86_reg" );
+		arm64_reg_py( m, "ARM64" );
+		x86_reg_py( m, "AMD64" );
 	}
 
 

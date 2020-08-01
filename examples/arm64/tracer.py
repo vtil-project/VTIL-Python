@@ -1,12 +1,12 @@
-from vtil.arch import *
+from vtil import *
 
 
 def main():
-    bbl = basic_block(0, architecture_identifier.arm64)
+    bbl = BasicBlock(0, ArchID.arm64)
     t0, zf = bbl.tmp(32, 1)
-    x0, x1 = arm64_reg.X0, arm64_reg.X1
-    sp = register_desc.SP
-    
+    x0, x1 = ARM64.X0, ARM64.X1
+    sp = RegisterDesc.SP
+
     bbl.mov(x0, 100)    \
        .push(x0)        \
        .mov(x1, x0)     \
@@ -20,8 +20,9 @@ def main():
        .mov(t0, x0)     \
        .sub(t0, 100)    \
        .te(zf, t0, 0)
-    
-    print('jz taken: {}'.format(tracer()(variable(bbl.end(), zf))))
+
+    bbl_tracer = tracer()
+    print('jz taken: {}'.format(bbl_tracer(variable(bbl.end(), zf))))
 
 
 if __name__ == '__main__':

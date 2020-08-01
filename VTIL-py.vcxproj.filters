@@ -87,9 +87,6 @@
     <ClInclude Include="src\common\util\fnv64.hpp">
       <Filter>Common\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\util\fnv128.hpp">
-      <Filter>Common\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="src\symex\expressions\unique_identifier.hpp">
       <Filter>SymEx\Expressions</Filter>
     </ClInclude>
@@ -125,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="src\compiler\common\interface.hpp">
       <Filter>Compiler\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\util\enumerator.hpp">
+      <Filter>Common\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

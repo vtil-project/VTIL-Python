@@ -23,7 +23,7 @@
     <ClInclude Include="src\architecture\symex\variable.hpp" />
     <ClInclude Include="src\architecture\trace\cached_tracer.hpp" />
     <ClInclude Include="src\architecture\trace\tracer.hpp" />
-    <ClInclude Include="src\common\util\fnv128.hpp" />
+    <ClInclude Include="src\common\util\enumerator.hpp" />
     <ClInclude Include="src\common\util\fnv64.hpp" />
     <ClInclude Include="src\compiler\common\interface.hpp" />
     <ClInclude Include="src\external\arm64_reg.hpp" />

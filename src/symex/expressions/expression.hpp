@@ -40,6 +40,7 @@
 
 #include <vtil/vtil>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 using namespace vtil::symbolic;
 namespace py = pybind11;
@@ -72,8 +73,12 @@ namespace vtil::python
 				.def_readwrite( "lhs", &expression::lhs )
 				.def_readwrite( "rhs", &expression::rhs )
 
-				.def_readwrite( "complexity", &expression::complexity )
-				.def_readwrite( "depth", &expression::depth )
+				.def_readonly( "complexity", &expression::complexity )
+				.def_readonly( "depth", &expression::depth )
+				.def_readonly( "hash_value", &expression::hash_value )
+				.def_readonly( "signature", &expression::depth )
+
+				.def_readwrite( "simplify_hint", &expression::simplify_hint )
 				.def_readwrite( "is_lazy", &expression::is_lazy )
 
 				// Functions
@@ -92,7 +97,6 @@ namespace vtil::python
 				.def( "count_unique_variables", &expression::count_unique_variables )
 
 				.def( "update", &expression::update )
-				.def( "to_string", &expression::to_string )
 
 				.def( "resize", [ ] ( expression& exp, bitcnt_t size, bool sign ) { return exp.resize( size, sign ); } )
 				.def( "simplify", py::overload_cast< bool >( &expression::simplify ) )
@@ -100,9 +104,13 @@ namespace vtil::python
 				.def( "is_identical", &expression::is_identical )
 				.def( "equals", &expression::equals )
 
-				.def( "evaluate", &expression::evaluate )
-				.def( "clone", &expression::clone )
-				.def( "make_lazy", &expression::make_lazy )
+				.def( "match_to", &expression::match_to )
+				.def( "xvalues", &expression::xvalues )
+
+				.def( "evaluate", [ ] ( expression& exp, std::function < uint64_t( unique_identifier )>& fn ) { exp.evaluate( fn ); } )
+				.def( "enumerate", [ ] ( expression& exp, std::function<void( expression )>& fn, bool bottom ) { return exp.enumerate( fn, bottom ); }, py::arg("fn"), py::arg("bottom") = false )
+
+				.def( "make_lazy", py::overload_cast< >( &expression::make_lazy ) )
 
 				.def( "__repr__", &expression::to_string )
 				.def( "__str__", &expression::to_string )

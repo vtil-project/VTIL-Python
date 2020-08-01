@@ -70,42 +70,73 @@ namespace vtil::python
 				.def_readwrite( "owner", &basic_block::owner )
 				.def_readwrite( "entry_vip", &basic_block::entry_vip )
 				.def_readwrite( "prev", &basic_block::prev )
-				.def_readwrite( "sp_offset", &basic_block::sp_offset )
-				.def_readwrite( "sp_index", &basic_block::sp_index )
 				.def_readwrite( "next", &basic_block::next )
-				.def_readwrite( "stream", &basic_block::stream )
+				.def_readwrite( "sp_index", &basic_block::sp_index )
+				.def_readwrite( "sp_offset", &basic_block::sp_offset )
 				.def_readwrite( "last_temporary_index", &basic_block::last_temporary_index )
 				.def_readwrite( "label_stack", &basic_block::label_stack )
 				.def_readwrite( "context", &basic_block::context )
+				.def_readwrite( "epoch", &basic_block::epoch )
 
 				// Functions
 				//
-				.def( "label_begin", &basic_block::label_begin )
-				.def( "label_end", &basic_block::label_end )
+				.def( "fork", &basic_block::fork )
 
-				.def( "size", &basic_block::size )
-				.def( "end", py::overload_cast< >( &basic_block::end ) )
-				.def( "begin", py::overload_cast< >( &basic_block::begin ) )
-				.def( "acquire", &basic_block::acquire )
-				.def( "erase", &basic_block::erase )
-				.def( "insert", [ ] ( basic_block& bbl, basic_block::const_iterator& it, instruction& ins ) { bbl.insert( it, std::move( ins ) ); } )
-				.def( "push_back", [ ] ( basic_block& bbl, instruction& ins ) { bbl.push_back( ins ); } )
+				.def( "label_end", &basic_block::label_end )
+				.def( "label_begin", &basic_block::label_begin )
+
 				.def( "is_complete", &basic_block::is_complete )
 
-				.def( "fork", &basic_block::fork )
+				.def( "hash", &basic_block::hash )
+
 				.def( "tmp", [ ] ( basic_block& bbl, bitcnt_t size ) { return bbl.tmp( size ); } )
 				.def( "tmp", &tmp_helper )
-				.def( "prepare_operand", [ ] ( basic_block& bbl, operand* op ) { return op; /* We use type_caster to explicitly cast to operand */ } )
+
+				.def( "vsfence", &basic_block::vsfence )
+				.def( "vlfence", &basic_block::vlfence )
+				.def( "vmfence", &basic_block::vmfence )
 
 				.def( "shift_sp", &basic_block::shift_sp )
 				.def( "vemits", &basic_block::vemits )
+				.def( "push", [ ] ( basic_block& bbl, const operand& op ) { return bbl.push( op ); } )
+				.def( "pop", [ ] ( basic_block& bbl, const operand& op ) { return bbl.pop( op ); } )
 				.def( "pushf", &basic_block::pushf )
 				.def( "popf", &basic_block::popf )
 
-				.def( "push", [ ] ( basic_block& bbl, const operand& op ) { return bbl.push( op ); } )
-				.def( "pop", [ ] ( basic_block& bbl, const operand& op ) { return bbl.pop( op ); } )
+				.def("empty", &basic_block::empty)
+				.def( "size", &basic_block::size )
+				.def( "back", &basic_block::back )
+				.def( "front", &basic_block::front )
+				.def( "wback", &basic_block::wback )
+				.def( "wfront", &basic_block::wfront )
+				.def( "begin", py::overload_cast< >( &basic_block::begin ) )
+				.def( "end", py::overload_cast< >( &basic_block::end ) )
 
-				.def( "hash", &basic_block::hash )
+				.def( "insert", &basic_block::insert )
+				.def( "push_back", [ ] ( basic_block& bbl, instruction& inst ) { return bbl.push_back( inst ); } )
+				.def( "push_front", [ ] ( basic_block& bbl, instruction& inst ) { return bbl.push_front( inst ); } )
+				//.def( "emplace", &emplace_helper )
+				//.def( "emplace_back", &emplace_back_helper )
+				//.def( "emplace_front", &emplace_front_helper )
+
+				.def( "np_insert", &basic_block::np_insert )
+				.def( "np_push_back", [ ] ( basic_block& bbl, instruction& inst ) { return bbl.np_push_back( inst ); } )
+				.def( "np_push_front", [ ] ( basic_block& bbl, instruction& inst ) { return bbl.np_push_front( inst ); } )
+				//.def( "np_emplace", &np_emplace_helper )
+				//.def( "np_emplace_back", &np_emplace_back_helper )
+				//.def( "np_emplace_front", &np_emplace_front_helper )
+
+				// TODO: assign helper?
+
+				.def( "erase", &basic_block::erase )
+				.def( "pop_front", &basic_block::pop_front )
+				.def( "pop_back", &basic_block::pop_front )
+				.def( "clear", &basic_block::clear )
+
+				.def( "acquire", py::overload_cast< basic_block::const_iterator&>(&basic_block::acquire) )
+				
+				.def( "prepare_operand", [ ] ( basic_block& bbl, operand* op ) { return op; /* We use type_caster to explicitly cast to operand */ } )
+
 
 				// End
 				//

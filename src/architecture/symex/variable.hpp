@@ -124,7 +124,8 @@ namespace vtil::python
 				.def( "to_string", &variable::to_string )
 				.def( "reduce", py::overload_cast< >( &variable::reduce ) )
 
-				.def( "pack_all", &variable::pack_all )
+				.def( "pack_all", py::overload_cast< const expression& >( &variable::pack_all ) )
+				.def( "pack_all", py::overload_cast< const expression::reference& >( &variable::pack_all ) )
 
 				.def( "read_by", &variable::read_by )
 				.def( "written_by", &variable::written_by )
