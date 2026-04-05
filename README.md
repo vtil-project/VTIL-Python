@@ -1,7 +1,7 @@
 <p align="center">
 
   <a href="https://www.vtil.cc/">
-    <img width="256" heigth="256" src="https://vtil.cc/assets/media/logo.png">
+    <img width="256" heigth="256" src="https://vtil.cc/logo.png">
   </a>  
 
   <h1 align="center">VTIL-Python</h1>
